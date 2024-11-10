@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "CLIBSTool": {
+      "commandName": "Project",
+      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+    },
+    "ApplySourceFont": {
+      "commandName": "Project",
+      "commandLineArgs": "ApplySourceFont",
+      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+    },
+    "Unpack": {
+      "commandName": "Project",
+      "commandLineArgs": "Unpack",
+      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+    },
+    "Pack": {
+      "commandName": "Project",
+      "commandLineArgs": "Pack",
+      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+    }
+  }
+}
