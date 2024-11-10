@@ -63,8 +63,9 @@ namespace CLIBSTool
             }
         }
 
-        public void TypeToTarget(string targetPath, int data3Num, string arName,
-            Point drawingOffset = default, char[] charsToType = null, int collumnsInTarget = 0
+        public void TypeToTarget(
+            string targetPath, int data3Num, string arName, Point cellDelta = default, char[] charsToType = null, 
+            int collumnsInTarget = 0, int drawingOffsetY = 0
         ) {
             var ttxPath = targetPath.Replace("Pictures", "DATA3").Replace(".png", string.Empty);
             var kerningFileName = arName.StartsWith("com") ? "kerning.dat" : "fontsize.dat";
@@ -78,12 +79,12 @@ namespace CLIBSTool
                 throw new Exception($"File not found: {kerningPath}");
             }
             var targetCols = collumnsInTarget == 0 ? columns : collumnsInTarget;
-            TypeToTarget(targetPath, kerningPath, ttxPath, data3Num, arName, targetCols, drawingOffset, charsToType);
+            TypeToTarget(targetPath, kerningPath, ttxPath, data3Num, arName, targetCols, cellDelta, charsToType, drawingOffsetY);
         }
 
         public void TypeToTarget(
             string targetPngPath,string targetKerningPath, string targetTTXPath, int data3Num,
-            string arName, int targetCols, Point drawingOffset = default, char[] charsToType = null
+            string arName, int targetCols, Point cellDelta, char[] charsToType, int drawingOffsetY
         ) {
             var tempTargetPngPath = targetPngPath + "temp";
             var codePage = CodePage.GetCodePage(data3Num, arName);
@@ -102,14 +103,14 @@ namespace CLIBSTool
                     for (int i = 0; i < codePage.Length; i++)
                     {
                         var requestedCharacter = codePage[i];
-                        TypeCharacter(requestedCharacter, codePage, targetGraphics, drawingOffset, targetKerning, targetCols);
+                        TypeCharacter(requestedCharacter, codePage, targetGraphics, cellDelta, targetKerning, targetCols, drawingOffsetY);
                     }
                 }
                 else
                 {
                     foreach (var character in charsToType)
                     {
-                        TypeCharacter(character, codePage, targetGraphics, drawingOffset, targetKerning, targetCols);
+                        TypeCharacter(character, codePage, targetGraphics, cellDelta, targetKerning, targetCols, drawingOffsetY);
                     }
                 }
                 Console.WriteLine($"Saving {targetPngPath} with new font");
@@ -123,7 +124,8 @@ namespace CLIBSTool
         }
 
         private void TypeCharacter(
-            char requestedCharacter, char[] codePage, Graphics targetGraphics, Point drawingOffset, byte[] targetKerning, int targetCols
+            char requestedCharacter, char[] codePage, Graphics targetGraphics, Point cellDelta, byte[] targetKerning,
+            int targetCols, int drawingOffsetY
         ) {
             var characterPosition = Array.IndexOf(codePage, requestedCharacter);
             var sourceIndex = Array.IndexOf(chars, requestedCharacter);
@@ -131,16 +133,17 @@ namespace CLIBSTool
 
             var requestedRow = characterPosition / targetCols;
             var requestedCol = characterPosition % targetCols;
-            var requestedHeight = height + drawingOffset.Y;
-            var requestedWidth = width + drawingOffset.X;
-            var requestedPosition = new Point(
-                requestedCol * requestedWidth + drawingOffset.Y, requestedRow * requestedHeight + drawingOffset.Y
-            );
-
-            var rectangle = new Rectangle(requestedPosition, new Size(requestedWidth, requestedHeight));
+            var requestedHeight = height + cellDelta.Y;
+            var requestedWidth = width + cellDelta.X;
+            var erasePosition = new Point(requestedCol * requestedWidth, requestedRow * requestedHeight);
+            var eraseSize = new Size(requestedWidth, requestedHeight);
+            var rectangle = new Rectangle(erasePosition, eraseSize);
             targetGraphics.SetClip(rectangle);
             targetGraphics.Clear(Color.Transparent);
             targetGraphics.ResetClip();
+            var requestedPosition = new Point(
+                requestedCol * requestedWidth, requestedRow * requestedHeight + drawingOffsetY
+            );
             targetGraphics.DrawImage(letter, requestedPosition);
 
             targetKerning[characterPosition] = (byte)GetActualKerning(sourceIndex);
@@ -172,8 +175,10 @@ namespace CLIBSTool
         {
             int line = letnum / columns;
             int col = letnum % columns;
+            var kerningWidth = GetActualKerning(letnum) + 3;
+            var useWidth = kerningWidth > width ? width : kerningWidth;
 
-            Rectangle rect = new Rectangle(col * width, line * height, width, height);
+            var rect = new Rectangle(col * width, line * height, useWidth, height);
             return CropImage(bitmap, rect);
         }
 

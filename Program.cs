@@ -92,9 +92,10 @@ public static class Program
         shadowSourceFont.TypeToTarget("Pictures/14/helpmsg.ar/font.ttx.png", 14, "helpmsg.ar");
         shadowSourceFont.TypeToTarget(
             "Pictures/14/commfont.ar/font0.ttx.png", 14, "commfont.ar",
-            drawingOffset: new(4, 5),
+            cellDelta: new(4, 5),
             charsToType: "ÄäÖöÜüß„“".ToCharArray(),
-            collumnsInTarget: 46
+            collumnsInTarget: 46,
+            drawingOffsetY: 2
         );
         shadowSourceFont.TypeToTarget("Pictures/14/sysfont.ar/font.ttx.png", 14, "sysfont.ar");
         shadowSourceFont.TypeToTarget("Pictures/549/font.ttx.png", 549, "none");
@@ -109,23 +110,23 @@ public static class Program
             spaceSize: 7
         );
         smallBlackSourceFont.TypeToTarget("Pictures/14/helpmsgb.ar/font.ttx.png", 14, "helpmsgb.ar");
-        smallBlackSourceFont.TypeToTarget("Pictures/2263/font.ttx.png", 2263, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2264/font.ttx.png", 2264, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2265/font.ttx.png", 2265, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2266/font.ttx.png", 2266, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2267/font.ttx.png", 2267, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2268/font.ttx.png", 2268, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2269/font.ttx.png", 2269, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2270/font.ttx.png", 2270, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2271/font.ttx.png", 2271, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2272/font.ttx.png", 2272, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2273/font.ttx.png", 2273, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2274/font.ttx.png", 2274, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2275/font.ttx.png", 2275, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2276/font.ttx.png", 2276, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2277/font.ttx.png", 2277, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2278/font.ttx.png", 2278, "none", new(2, 1));
-        smallBlackSourceFont.TypeToTarget("Pictures/2279/font.ttx.png", 2279, "none", new(2, 1));
+        smallBlackSourceFont.TypeToTarget("Pictures/2263/font.ttx.png", 2263, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2264/font.ttx.png", 2264, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2265/font.ttx.png", 2265, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2266/font.ttx.png", 2266, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2267/font.ttx.png", 2267, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2268/font.ttx.png", 2268, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2269/font.ttx.png", 2269, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2270/font.ttx.png", 2270, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2271/font.ttx.png", 2271, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2272/font.ttx.png", 2272, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2273/font.ttx.png", 2273, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2274/font.ttx.png", 2274, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2275/font.ttx.png", 2275, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2276/font.ttx.png", 2276, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2277/font.ttx.png", 2277, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2278/font.ttx.png", 2278, "none", new(2, 1), drawingOffsetY: 1);
+        smallBlackSourceFont.TypeToTarget("Pictures/2279/font.ttx.png", 2279, "none", new(2, 1), drawingOffsetY: 1);
 
         var fatWhiteSourceFont = new SourceFont(
             path: "GerSourceFonts/2256/font.ttx.png",
