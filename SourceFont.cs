@@ -89,11 +89,7 @@ namespace CLIBSTool
             var tempTargetPngPath = targetPngPath + "temp";
             var codePage = CodePage.GetCodePage(data3Num, arName);
             var kerningReader = new BinaryReader(new FileStream(targetKerningPath, FileMode.Open));
-            var targetKerning = new byte[codePage.Length];
-            for (int i = 0; i < codePage.Length; i++)
-            {
-                targetKerning[i] = kerningReader.ReadByte();
-            }
+            var targetKerning = kerningReader.ReadBytes((int)kerningReader.BaseStream.Length);
             kerningReader.Close();
             kerningReader.Dispose();
             using (var targetBitMap = new Bitmap(targetPngPath))
