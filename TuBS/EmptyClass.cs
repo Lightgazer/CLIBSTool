@@ -26,6 +26,7 @@ public sealed partial class MainWindow
             Path.Combine ("DATA3", "13", "qitemwp.ar", "kabe131.ttx"),
             Path.Combine ("DATA3", "13", "qlistwp.ar", "kabe125.ttx"),
             Path.Combine ("DATA3", "13", "qlistwp.ar", "kabe126.ttx"),
+            Path.Combine ("DATA3", "13", "tmap.ar", "tmap001.ttx"),
             Path.Combine ("DATA3", "2919", "title.ttx"),
             Path.Combine ("DATA3", "2930", "kabe120.ttx"),
             Path.Combine ("DATA3", "2931", "kabe125.ttx"),
