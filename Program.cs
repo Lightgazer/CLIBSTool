@@ -153,10 +153,10 @@ public static class Program
         middleWhiteSourceFont.TypeToTarget("Pictures/13/mission.ar/font.ttx.png", 13, "mission.ar");
         middleWhiteSourceFont.TypeToTarget("Pictures/13/evitem.ar/font.ttx.png", 13, "evitem.ar");
         middleWhiteSourceFont.TypeToTarget("Pictures/14/smenui.ar/font.ttx.png", 14, "smenui.ar");
-        middleWhiteSourceFont.TypeToTarget("Pictures/14/namene.ar/font.ttx.png", 14, "namene.ar");
-        middleWhiteSourceFont.TypeToTarget("Pictures/552/font.ttx.png", 552, "none");
+        middleWhiteSourceFont.TypeToTarget("Pictures/14/namene.ar/font.ttx.png", 14, "namene.ar", new(-4, -1), drawingOffsetY: -1);
+        middleWhiteSourceFont.TypeToTarget("Pictures/552/font.ttx.png", 552, "none", new(-4, -1), drawingOffsetY: -1);
         middleWhiteSourceFont.TypeToTarget("Pictures/2261/font.ttx.png", 2261, "none");
-        middleWhiteSourceFont.TypeToTarget("Pictures/2284/font.ttx.png", 2284, "none");
+        middleWhiteSourceFont.TypeToTarget("Pictures/2284/font.ttx.png", 2284, "none", new(-4, -1), drawingOffsetY: -1);
         middleWhiteSourceFont.TypeToTarget("Pictures/2449/font.ttx.png", 2449, "none");
 
         Console.WriteLine("Copy comrfont.ar/font0.ttx.png");

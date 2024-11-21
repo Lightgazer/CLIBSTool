@@ -171,7 +171,10 @@ public sealed partial class MainWindow
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(back_dir + file));
                 if (File.Exists(file))
+                {
                     File.Move(file, back_dir + file);
+                    Console.WriteLine("Backup: Saved " + file);
+                }
             }
         }
         //backup end
@@ -301,6 +304,7 @@ public sealed partial class MainWindow
                     {
                         File.Delete(file);
                         File.Move(back_dir + file, file);
+                        Console.WriteLine("Backup: Restored " + file);
                     }
             }
             DeleteDirectory(back_dir);
