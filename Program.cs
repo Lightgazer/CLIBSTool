@@ -160,9 +160,40 @@ public static class Program
         middleWhiteSourceFont.TypeToTarget("Pictures/2449/font.ttx.png", 2449, "none");
 
         Console.WriteLine("Copy comrfont.ar/font0.ttx.png");
-        File.Copy("GerSourceFonts/14/comrfont.ar/font0.ttx.png", "Pictures/14/comrfont.ar/font0.ttx.png", true);
-        Console.WriteLine("Copy comlfont.ar/font0.ttx.png");
-        File.Copy("GerSourceFonts/14/comlfont.ar/font0.ttx.png", "Pictures/14/comlfont.ar/font0.ttx.png", true);
+
+        var comChars = ("？あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわを" +
+            "んがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽっゃゅょぁぃぅぇぉアイウエオカキクケコサ" +
+            "シスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダ" +
+            "ヂヅデドバビブベボパピプペポッャュョァィゥェォヴゎヮ0123456789ABCDEFGHIJKLMNOPQRSTUVWXY" +
+            "Zー!?、。「」Σ'Д`∀ヾ゜дω・\u3000㌧㌦㌍㌢ゝ秒abcdefghijklmnopqrstuvwxyz冬燦峰【】\u3000ÄäÖöÜüß„“").ToCharArray();
+
+        var comrWhiteFont = new SourceFont(
+            path: "GerSourceFonts/14/comrfont.ar/font0.ttx.png",
+            height: 22,
+            width: 22,
+            collumns: 46,
+            chars: comChars,
+            kerningOffset: 0,
+            spaceSize: 7
+        );
+        comrWhiteFont.TypeToTarget(
+            "Pictures/14/comrfont.ar/font0.ttx.png", 14, "comrfont.ar",
+            charsToType: "ÄäÖöÜüß„“".ToCharArray()
+        );
+
+        var comlWhiteFont = new SourceFont(
+            path: "GerSourceFonts/14/comlfont.ar/font0.ttx.png",
+            height: 26,
+            width: 20,
+            collumns: 46,
+            chars: comChars,
+            kerningOffset: 0,
+            spaceSize: 7
+        );
+        comlWhiteFont.TypeToTarget(
+            "Pictures/14/comlfont.ar/font0.ttx.png", 14, "comlfont.ar",
+            charsToType: "ÄäÖöÜüß„“".ToCharArray()
+        );
     }
 
     private static void Unpack()
