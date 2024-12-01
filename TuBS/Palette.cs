@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 public class PaletteBGR //BGR555
 {
@@ -194,6 +195,9 @@ public class PaletteRGBA8
         {
             if (paletteA[i] == color.A & paletteR[i] == color.R & paletteG[i] == color.G & paletteB[i] == color.B)
                 return (byte)i;
+        }
+        for (int i = 0; i < palette_size / 4; i++)
+        {
             int dev = Math.Abs(paletteA[i] - color.A) + Math.Abs(paletteR[i] - color.R) + Math.Abs(paletteG[i] - color.G) + Math.Abs(paletteB[i] - color.B);
             if (paletteA[i] == 0 & color.A == 0)
             {
@@ -217,13 +221,15 @@ public class PaletteRGBA8
 
 public class PaletteRGBA4
 {
-    int[] paletteA = new int[16];
-    int[] paletteR = new int[16];
-    int[] paletteG = new int[16];
-    int[] paletteB = new int[16];
+    Color[] colors = new Color[16];
 
     public PaletteRGBA4(string file)
     {
+        int[] paletteA = new int[16];
+        int[] paletteR = new int[16];
+        int[] paletteG = new int[16];
+        int[] paletteB = new int[16];
+
         int alpha_mult = 2;
         BinaryReader reader = new BinaryReader((Stream)new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read));
         reader.BaseStream.Position = 32;
@@ -239,8 +245,12 @@ public class PaletteRGBA4
         for (int i = 0; i < 16; i++)
             paletteA[i] *= alpha_mult;
         reader.Close();
-    }
 
+        for (int i = 0; i < 16; i++)
+        {
+            colors[i] = Color.FromArgb(paletteA[i], paletteR[i], paletteG[i], paletteB[i]);
+        }
+    }
     public byte GetIndex(Color color)
     {
         byte index = 0;
@@ -248,13 +258,26 @@ public class PaletteRGBA4
 
         for (int i = 0; i < 16; i++)
         {
-            if (paletteA[i] == color.A & paletteR[i] == color.R & paletteG[i] == color.G & paletteB[i] == color.B)
+            if (colors[i] == color)
                 return (byte)i;
-            int dev = Math.Abs(paletteA[i] - color.A) + Math.Abs(paletteR[i] - color.R) + Math.Abs(paletteG[i] - color.G) + Math.Abs(paletteB[i] - color.B);
-            if (paletteA[i] == 0 & color.A == 0)
+        }
+        for (int i = 0; i < 16; i++)
+        {
+            var colorCanditate = colors[i];
+            int dev;
+            if (colorCanditate.A == 0)
             {
-                index = (byte)i;
-                break;
+                if (color.A == 0) return (byte)i;
+
+                dev = Math.Abs(colorCanditate.A - color.A);
+            }
+            else
+            {
+                dev =
+                   Math.Abs(colorCanditate.A - color.A) +
+                   Math.Abs(colorCanditate.R - color.R) +
+                   Math.Abs(colorCanditate.G - color.G) +
+                   Math.Abs(colorCanditate.B - color.B);
             }
             if (maxdev > dev)
             {
@@ -267,6 +290,6 @@ public class PaletteRGBA4
 
     public Color GetColor(byte index)
     {
-        return Color.FromArgb(paletteA[index], paletteR[index], paletteG[index], paletteB[index]);
+        return colors[index];
     }
 }
