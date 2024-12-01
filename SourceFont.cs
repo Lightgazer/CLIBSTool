@@ -117,7 +117,6 @@ namespace CLIBSTool
             Console.WriteLine($"Saving {targetKerningPath} with new kerning");
             File.WriteAllBytes(targetKerningPath, targetKerning);
             ImageConv.PNGToTTX(targetPngPath, targetTTXPath);
-            ImageConv.TTXToPNG(targetTTXPath, targetPngPath + "check.png");
         }
 
         private void TypeCharacter(
