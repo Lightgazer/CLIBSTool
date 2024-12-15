@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 public partial class MainWindow
@@ -75,12 +76,16 @@ public partial class MainWindow
                     if (fcount > qcount)
                     {
                         ret = false;
-                        File.AppendAllText("error.txt", "\r\nError: " + (fcount - qcount).ToString() + " extra ■ in " + script_file + " File: " + name + "\r\n");
+                        var errorText = $"Error: {fcount - qcount} extra ■ in {script_file} File: {name}";
+                        Console.WriteLine(errorText);
+                        File.AppendAllText("error.txt", $"\r\n{errorText}\r\n");
                     }
                     else if (fcount < qcount)
                     {
                         ret = false;
-                        File.AppendAllText("error.txt", "\r\nError: " + (qcount - fcount).ToString() + " missing ■ in " + script_file + " File: " + name + "\r\n");
+                        var errorText = $"Error: {qcount - fcount} missing ■ in {script_file} File: {name}";
+                        Console.WriteLine(errorText);
+                        File.AppendAllText("error.txt", $"\r\n{errorText}\r\n");
                     }
                 }
         }

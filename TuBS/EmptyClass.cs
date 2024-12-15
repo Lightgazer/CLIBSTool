@@ -147,6 +147,7 @@ public sealed partial class MainWindow
             Console.WriteLine(item);
         foreach (string item in parent_list)
             Console.WriteLine(item);
+        Console.WriteLine();
     }
 
     private void ReadImportList(string list)
@@ -155,7 +156,6 @@ public sealed partial class MainWindow
         import_list.AddRange(items);
 
         SortImportFiles();
-        PrintImportFiles();
     }
 
     public static void DeleteDirectory(string target_dir)

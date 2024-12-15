@@ -194,6 +194,7 @@ public static class Program
             "Pictures/14/comlfont.ar/font0.ttx.png", 14, "comlfont.ar",
             charsToType: "ÄäÖöÜüß„“".ToCharArray()
         );
+        Console.WriteLine("Done");
     }
 
     private static void Unpack()

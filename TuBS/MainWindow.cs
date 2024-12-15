@@ -38,6 +38,7 @@ public sealed partial class MainWindow
 
         foreach (string list in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "list*.txt", SearchOption.TopDirectoryOnly))
             ReadImportList(list);
+        PrintImportFiles();
     }
 
     protected void UnpackTARC(string file, string child_dir, string out_dir)
