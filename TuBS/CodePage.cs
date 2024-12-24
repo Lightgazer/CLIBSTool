@@ -227,7 +227,7 @@
                 "仇殴尚坊五算添醒托漆暖含舞遮沸号灰式秋儀恒歪社枢畏冴躙喧嘩貯仔殖貌献牛象魚那憧銘演沈語岬頂戴懲飯珍頻繁映煮埒悩盛織慨脈省埃傘八州隅筆妬峠嵐秀憐償錆辱汗謹系緯屍沢仮欺順絡愕濃徐脳績銅緑更底岳匠鳴罰七羊脂" +
                 "婿賎励景央署壇繋緩宣睦恰隻締色豆寿縮蓮棲蛮氏賛効塔掃概唄勾寸鋒泥廷錯転叫微曽醜煉妨偶掟兆壮午凱儲痣槌烈疾徹俊敏瀕拡庶湖刺渾刹粋贅崇唐惚餓沖没怠看板鏡魅霧鬼璧劇凛培蒙昧藉悶蠢怨霊瘴蚊棺桶華雫雨逞禄抹寧贈" +
                 "脹羨撒○×△□鋼登＋餌飴釣鞭姑楯科諌翻擬簒迅掲瀬堂俗゛舌噛侭頬磨摘祟隼照酌～肖遍猫楚眉盲免雪翌帳茨膚競嬌丸爛漫畔宗院博冠姻純渇鈴癖凧丁浸貢賀豪罵宴鈍乙陽昇芯便戸源幕禍排促滴創郊玩堵宅房改些澄航摯－喪Ⅰ" +
-                "ⅡⅢⅣⅤⅥⅦⅧⅨⅩ諾僅補ゐゑヰヱヵ熊喋錠鼓架※＊既電♪削蒼氷嗜卓渓咄嗟＃＄＆湿阿呆枠此惹幹拘．催擲依暦粒栗較韋睡揚詠疫蔓区彷徨遙砥銑矛診尾蝉煽駿♂♀爪拳茂池六麓，：；¨＾￣＿―‐＼∥｜‥‘’“”〔〕［］" +
+                "ⅡⅢⅣⅤⅥⅦⅧⅨⅩ諾僅補ゐゑヰヱヵ熊喋錠鼓架※＊既電♪削蒼氷嗜卓渓咄嗟＃＄＆湿阿呆枠此惹幹拘．催擲依暦粒栗較韋睡揚詠疫蔓区彷徨遙砥銑矛診尾蝉煽駿♂♀爪拳茂池六麓，：；¨＾￣＿―‐＼∥｜‥‘’””〔〕［］" +
                 "｛｝〈〉《》『』±÷＝≠＜＞≦≧％§☆★●◎◇◆■▲▽▼→←↑↓ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψ垣九岐寵球研樹蒸壺弦謁校賓園剤燕叙週＠＠辿維胎" +
                 "瓦篤旨盆栽麦響脆箇項暫痺汎型竿壷噴凍蛾鱗耕亜鉛鉱錬隕譲頓憩醇克蕩沌馴虔徘徊宛査井汲碑貿綻推奨郭套灼載堪梁披幅贔屓嶺穀菜袈裟挽晒秤殉斃儚彫菩尖碧酵弐衡融疎哨薔薇縫陶鴨蟹淡酸爽薫庭炒蓋鶏兎茸羅貝柱苺季蜜塊鳳" +
                 "凰髭硬粘幣溶橙屑牡猪鳩煎植鯨靱塵曜銛棍但妖嚇円盤捻銭淵煙妄胡述婆坑柵帆枯伴撹据眩濯慧臓雰奏桟医奮竹獰颯傑漏則塗珠蟲府吉趣廠洩諜捲聴罷袖循棚吏紳机絨毯磁瓶懺贖燈邸胞彩液琥珀享啓伊綴貼逢穿孔豹佐鉱帽絆膏扮潤" +
@@ -238,17 +238,17 @@
         else
         {
             if (num == 0)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 1)
                 num = 2457;
             if (num == 2)
                 num = 2460;
             if (num == 4)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 6)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 11)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 13)
             {
                 if (name == "mission.ar")
@@ -256,9 +256,9 @@
                 if (name == "evitem.ar")
                     num = 2449;
                 if (name == "areanml.ar")
-                    return "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„“".ToCharArray();
+                    return "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&".ToCharArray();
                 if (name == "townarea.ar")
-                    return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                    return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray();
             }
             if (num == 14)
             {
@@ -267,52 +267,52 @@
                 if (name == "namene.ar")
                     num = 552;
                 if (name == "helpmsg.ar")
-                    return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                    return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray();
                 if (name == "helpmsgb.ar")
-                    return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                    return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray();
                 if (name == "smenui.ar")
-                    return "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„“".ToCharArray();
+                    return "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&".ToCharArray();
             }
             if (num == 549)  //same as 14.sysfont
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 552)  //same as 14.namene
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray();
             if (num == 2256)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2257)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2261)  //same as 13.mission
-                return "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„“".ToCharArray();
+                return "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&".ToCharArray();
             if (num == 2264)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray();
             if (
                 num == 2263 || num == 2265 || num == 2266 || num == 2267 || num == 2268 || num == 2269 ||
                 num == 2270 || num == 2272 || num == 2273 || num == 2271 || num == 2274 || num == 2275 ||
                 num == 2276 || num == 2277 || num == 2278 || num == 2279
             )
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2284)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray();
             if (num == 2449)  // same as 13.evitem
-                return "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„“".ToCharArray();
+                return "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&".ToCharArray();
             if (num == 2455)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2456)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2457)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2458)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2459)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2460)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
             if (num == 2462)
-                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray();
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray();
             return ("？あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわを" +
                 "んがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽっゃゅょぁぃぅぇぉアイウ" +
                 "エオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポッャュョァィゥェォヴゎヮ0123456789ABCDEFGHI" +
-                "JKLMNOPQRSTUVWXYZー!?、。「」Σ'Д`∀ヾ゜дω・\u3000㌧㌦㌍㌢ゝ秒abcdefghijklmnopqrstuvwxyz冬燦峰【】\u3000ÄäÖöÜüß„“私最後力大陸役立思許様他" +
+                "JKLMNOPQRSTUVWXYZー!?、。「」Σ'Д`∀ヾ゜дω・\u3000㌧㌦㌍㌢ゝ秒abcdefghijklmnopqrstuvwxyz冬燦峰【】\u3000ÄäÖöÜüß„”私最後力大陸役立思許様他" +
                 "干渉不幸招旅裏切神竜王類次時代委定族同士長苦戦現状正使限誰管理恐未来無関係墓暴解放玉永劫守仰一与彼支配者意志約束…争考少違本質的好認飽欲望進化鍵運命死言生物殺食動作弱肉強新世界摂甘自然愛草木重野獣性温" +
                 "心信導目覚結果出残捧民救術教危機迫念資格仲知問題男狂気悪北沼封印責任待会談終日事託受証拠聖賜芳女何申破滅勇剣授手伝壁絵右光魔道書左宝黄金輝甲冑身暗黒向説今前御僕協話聞助願邪帝国侵略背度訳虐分悔騎誇味悟" +
                 "上子軍内弟伯爵通以組敵方専門判断流水元十承行汝加護失探継描姿遣奇跡下団傍有由誉傭用要踊覧率轄屯侶了領剰輪麗歴偉録綺東友奉武至高是非卿勧礼先娘嘆兵多攻込座亡努務数年名参隊取避得決臆病熟詔婦預昨姪塞隣親派" +
@@ -330,7 +330,7 @@
                 "仇殴尚坊五算添醒托漆暖含舞遮沸号灰式秋儀恒歪社枢畏冴躙喧嘩貯仔殖貌献牛象魚那憧銘演沈語岬頂戴懲飯珍頻繁映煮埒悩盛織慨脈省埃傘八州隅筆妬峠嵐秀憐償錆辱汗謹系緯屍沢仮欺順絡愕濃徐脳績銅緑更底岳匠鳴罰七羊脂" +
                 "婿賎励景央署壇繋緩宣睦恰隻締色豆寿縮蓮棲蛮氏賛効塔掃概唄勾寸鋒泥廷錯転叫微曽醜煉妨偶掟兆壮午凱儲痣槌烈疾徹俊敏瀕拡庶湖刺渾刹粋贅崇唐惚餓沖没怠看板鏡魅霧鬼璧劇凛培蒙昧藉悶蠢怨霊瘴蚊棺桶華雫雨逞禄抹寧贈" +
                 "脹羨撒○×△□鋼登+餌飴釣鞭姑楯科諌翻擬簒迅掲瀬堂俗\"舌噛侭頬磨摘祟隼照酌~肖遍猫楚眉盲免雪翌帳茨膚競嬌丸爛漫畔宗院博冠姻純渇鈴癖凧丁浸貢賀豪罵宴鈍乙陽昇芯便戸源幕禍排促滴創郊玩堵宅房改些澄航摯－喪Ⅰ" +
-                "ⅡⅢⅣⅤⅥⅦⅧⅨⅩ諾僅補ゐゑヰヱヵ熊喋錠鼓架※*既電♪削蒼氷嗜卓渓咄嗟#$&湿阿呆枠此惹幹拘.催擲依暦粒栗較韋睡揚詠疫蔓区彷徨遙砥銑矛診尾蝉煽駿♂♀爪拳茂池六麓,:;¨^￣＿―-\\∥|‥‘’“”〔〕[]" +
+                "ⅡⅢⅣⅤⅥⅦⅧⅨⅩ諾僅補ゐゑヰヱヵ熊喋錠鼓架※*既電♪削蒼氷嗜卓渓咄嗟#$&湿阿呆枠此惹幹拘.催擲依暦粒栗較韋睡揚詠疫蔓区彷徨遙砥銑矛診尾蝉煽駿♂♀爪拳茂池六麓,:;¨^￣＿―-\\∥|‥‘’””〔〕[]" +
                 "{}〈〉《》『』±÷=≠<>≦≧%§☆★●◎◇◆■▲▽▼→←↑↓АВГΔЕΖНΘΙКΛМΝΞОПРТΥФЧΨΩαβγδεζηθικλμνξοπρστυφχψ垣九岐寵球研樹蒸壺弦謁校賓園剤燕叙週＠＠辿維胎" +
                 "瓦篤旨盆栽麦響脆箇項暫痺汎型竿壷噴凍蛾鱗耕亜鉛鉱錬隕譲頓憩醇克蕩沌馴虔徘徊宛査井汲碑貿綻推奨郭套灼載堪梁披幅贔屓嶺穀菜袈裟挽晒秤殉斃儚彫菩尖碧酵弐衡融疎哨薔薇縫陶鴨蟹淡酸爽薫庭炒蓋鶏兎茸羅貝柱苺季蜜塊鳳" +
                 "凰髭硬粘幣溶橙屑牡猪鳩煎植鯨靱塵曜銛棍但妖嚇円盤捻銭淵煙妄胡述婆坑柵帆枯伴撹据眩濯慧臓雰奏桟医奮竹獰颯傑漏則塗珠蟲府吉趣廠洩諜捲聴罷袖循棚吏紳机絨毯磁瓶懺贖燈邸胞彩液琥珀享啓伊綴貼逢穿孔豹佐鉱帽絆膏扮潤" +

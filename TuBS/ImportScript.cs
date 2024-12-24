@@ -129,7 +129,6 @@ public partial class MainWindow
         bool end_flag;
         int sq_index = 0;
 
-
         string cur_line = script_reader.ReadLine();
         while (cur_line != null)
         {

@@ -51,7 +51,7 @@ public static class Program
             height: 26,
             width: 26,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„“".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray(),
             kerningOffset: -1,
             spaceSize: 12
         );
@@ -74,7 +74,7 @@ public static class Program
             height: 16,
             width: 18,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
             spaceSize: 6
         );
@@ -85,7 +85,7 @@ public static class Program
             height: 20,
             width: 18,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray(),
             kerningOffset: 0,
             spaceSize: 7
         );
@@ -93,7 +93,7 @@ public static class Program
         shadowSourceFont.TypeToTarget(
             "Pictures/14/commfont.ar/font0.ttx.png", 14, "commfont.ar",
             cellDelta: new(4, 5),
-            charsToType: "ÄäÖöÜüß„“".ToCharArray(),
+            charsToType: "ÄäÖöÜüß„”".ToCharArray(),
             collumnsInTarget: 46,
             drawingOffsetY: 2
         );
@@ -105,7 +105,7 @@ public static class Program
             height: 19,
             width: 18,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray(),
             kerningOffset: 0,
             spaceSize: 7
         );
@@ -133,7 +133,7 @@ public static class Program
             height: 30,
             width: 30,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„“".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray(),
             kerningOffset: 0,
             spaceSize: 14
         );
@@ -145,7 +145,7 @@ public static class Program
             height: 20,
             width: 22,
             collumns: 32,
-            chars: "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„“".ToCharArray(),
+            chars: "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
             spaceSize: 7
         );
@@ -165,7 +165,7 @@ public static class Program
             "んがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽっゃゅょぁぃぅぇぉアイウエオカキクケコサ" +
             "シスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダ" +
             "ヂヅデドバビブベボパピプペポッャュョァィゥェォヴゎヮ0123456789ABCDEFGHIJKLMNOPQRSTUVWXY" +
-            "Zー!?、。「」Σ'Д`∀ヾ゜дω・\u3000㌧㌦㌍㌢ゝ秒abcdefghijklmnopqrstuvwxyz冬燦峰【】\u3000ÄäÖöÜüß„“").ToCharArray();
+            "Zー!?、。「」Σ'Д`∀ヾ゜дω・\u3000㌧㌦㌍㌢ゝ秒abcdefghijklmnopqrstuvwxyz冬燦峰【】\u3000ÄäÖöÜüß„”").ToCharArray();
 
         var comrWhiteFont = new SourceFont(
             path: "GerSourceFonts/14/comrfont.ar/font0.ttx.png",
@@ -178,7 +178,7 @@ public static class Program
         );
         comrWhiteFont.TypeToTarget(
             "Pictures/14/comrfont.ar/font0.ttx.png", 14, "comrfont.ar",
-            charsToType: "ÄäÖöÜüß„“".ToCharArray()
+            charsToType: "ÄäÖöÜüß„”".ToCharArray()
         );
 
         var comlWhiteFont = new SourceFont(
@@ -192,7 +192,7 @@ public static class Program
         );
         comlWhiteFont.TypeToTarget(
             "Pictures/14/comlfont.ar/font0.ttx.png", 14, "comlfont.ar",
-            charsToType: "ÄäÖöÜüß„“".ToCharArray()
+            charsToType: "ÄäÖöÜüß„”".ToCharArray()
         );
         Console.WriteLine("Done");
     }
