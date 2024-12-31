@@ -1,34 +1,40 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CLIBSTool
 {
-    public sealed class SourceFont(string path, int height, int width, int collumns, char[] chars, int kerningOffset, int spaceSize)
-    {
-        private string path = path;
-        private int height = height;
-        private int width = width;
-        private int columns = collumns;
-        private char[] chars = chars;
-        private int[] kernings = new int[chars.Length];
-        private int kerningOffset = kerningOffset;
+    public sealed class SourceFont(
+        string path, int height, int width, int collumns, char[] chars, int kerningOffset, Dictionary<char, int> specialKerings
+    ) {
+        private readonly string path = path;
+        private readonly int height = height;
+        private readonly int width = width;
+        private readonly int columns = collumns;
+        private readonly char[] chars = chars;
+        private readonly int[] kernings = new int[chars.Length];
+        private readonly int kerningOffset = kerningOffset;
+        private readonly Dictionary<char, int> specialKerings = specialKerings;
         private bool isKerningFilled = false;
-        private int spaceSize = spaceSize;
-
 
         private Bitmap bmp2;
         private Bitmap bitmap => bmp2 ??= new (path);
 
         private void FillKerning()
         {
-            for (int charIndex = 0; charIndex < chars.Length; charIndex++) {
-                if (chars[charIndex] == '\u3000')
+            var rows = bitmap.Height / height;
+
+            for (int charIndex = 0; charIndex < chars.Length; charIndex++) 
+            {
+                var currentCharacter = chars[charIndex];
+                if (specialKerings.TryGetValue(currentCharacter, out var specialKerning))
                 {
-                    kernings[charIndex] = spaceSize;
+                    kernings[charIndex] = specialKerning;
                     continue;
+                }
+                var charRow = charIndex / columns;
+                if (charRow >= rows)
+                {
+                    break; // todo second page
                 }
                 var charPosition = GetCharPosition(charIndex);
                 var emptyCols = new List<int>();
@@ -61,6 +67,7 @@ namespace CLIBSTool
                     }
                 }
             }
+            isKerningFilled = true;
         }
 
         public void TypeToTarget(

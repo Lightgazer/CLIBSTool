@@ -53,7 +53,7 @@ public static class Program
             collumns: 32,
             chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray(),
             kerningOffset: -1,
-            spaceSize: 12
+            specialKerings: new Dictionary<char, int> { { '\u3000', 12 } }
         );
         fatForMapSourceFont.TypeToTarget("Pictures/0/athmap05.ar/font.ttx.png", 0, "athmap05.ar");
         fatForMapSourceFont.TypeToTarget("Pictures/1/athmap04.ar/font.ttx.png", 1, "athmap04.ar");
@@ -76,7 +76,7 @@ public static class Program
             collumns: 32,
             chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
-            spaceSize: 6
+            specialKerings: new Dictionary<char, int> { { '\u3000', 6 }, { '&', 15 } }
         );
         verySmallWhiteSourceFont.TypeToTarget("Pictures/13/townarea.ar/font.ttx.png", 13, "townarea.ar");
 
@@ -85,17 +85,18 @@ public static class Program
             height: 20,
             width: 18,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
-            spaceSize: 7
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, { '&', 17 } }
         );
         shadowSourceFont.TypeToTarget("Pictures/14/helpmsg.ar/font.ttx.png", 14, "helpmsg.ar");
         shadowSourceFont.TypeToTarget(
             "Pictures/14/commfont.ar/font0.ttx.png", 14, "commfont.ar",
             cellDelta: new(4, 5),
-            charsToType: "ÄäÖöÜüß„”".ToCharArray(),
+            charsToType: "ÄäÖöÜüß„”&".ToCharArray(),
             collumnsInTarget: 46,
             drawingOffsetY: 2
+        //second: "Pictures/14/commfont.ar/font1.ttx.png"
         );
         shadowSourceFont.TypeToTarget("Pictures/14/sysfont.ar/font.ttx.png", 14, "sysfont.ar");
         shadowSourceFont.TypeToTarget("Pictures/549/font.ttx.png", 549, "none");
@@ -105,9 +106,9 @@ public static class Program
             height: 19,
             width: 18,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
-            spaceSize: 7
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, { '&', 15 } }
         );
         smallBlackSourceFont.TypeToTarget("Pictures/14/helpmsgb.ar/font.ttx.png", 14, "helpmsgb.ar");
         smallBlackSourceFont.TypeToTarget("Pictures/2263/font.ttx.png", 2263, "none", new(2, 1), drawingOffsetY: 1);
@@ -135,7 +136,7 @@ public static class Program
             collumns: 32,
             chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray(),
             kerningOffset: 0,
-            spaceSize: 14
+            specialKerings: new Dictionary<char, int> { { '\u3000', 14 } }
         );
         fatWhiteSourceFont.TypeToTarget("Pictures/2256/font.ttx.png", 2256, "none");
         fatWhiteSourceFont.TypeToTarget("Pictures/2462/font.ttx.png", 2462, "none");
@@ -147,7 +148,7 @@ public static class Program
             collumns: 32,
             chars: "ABCD\u3000EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
-            spaceSize: 7
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, { '&', 15 } }
         );
         middleWhiteSourceFont.TypeToTarget("Pictures/13/areanml.ar/font.ttx.png", 13, "areanml.ar");
         middleWhiteSourceFont.TypeToTarget("Pictures/13/mission.ar/font.ttx.png", 13, "mission.ar");
@@ -161,11 +162,7 @@ public static class Program
 
         Console.WriteLine("Copy comrfont.ar/font0.ttx.png");
 
-        var comChars = ("？あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわを" +
-            "んがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽっゃゅょぁぃぅぇぉアイウエオカキクケコサ" +
-            "シスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダ" +
-            "ヂヅデドバビブベボパピプペポッャュョァィゥェォヴゎヮ0123456789ABCDEFGHIJKLMNOPQRSTUVWXY" +
-            "Zー!?、。「」Σ'Д`∀ヾ゜дω・\u3000㌧㌦㌍㌢ゝ秒abcdefghijklmnopqrstuvwxyz冬燦峰【】\u3000ÄäÖöÜüß„”").ToCharArray();
+        var comChars = CodePage.GetCodePage(-1, mode: "import");
 
         var comrWhiteFont = new SourceFont(
             path: "GerSourceFonts/14/comrfont.ar/font0.ttx.png",
@@ -174,11 +171,12 @@ public static class Program
             collumns: 46,
             chars: comChars,
             kerningOffset: 0,
-            spaceSize: 7
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
         );
         comrWhiteFont.TypeToTarget(
             "Pictures/14/comrfont.ar/font0.ttx.png", 14, "comrfont.ar",
             charsToType: "ÄäÖöÜüß„”".ToCharArray()
+            //second: "Pictures/14/comrfont.ar/font1.ttx.png"
         );
 
         var comlWhiteFont = new SourceFont(
@@ -188,11 +186,12 @@ public static class Program
             collumns: 46,
             chars: comChars,
             kerningOffset: 0,
-            spaceSize: 7
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
         );
         comlWhiteFont.TypeToTarget(
             "Pictures/14/comlfont.ar/font0.ttx.png", 14, "comlfont.ar",
             charsToType: "ÄäÖöÜüß„”".ToCharArray()
+            //second: "Pictures/14/comlfont.ar/font1.ttx.png"
         );
         Console.WriteLine("Done");
     }
