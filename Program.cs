@@ -193,6 +193,44 @@ public static class Program
             charsToType: "ÄäÖöÜüß„”".ToCharArray()
             //second: "Pictures/14/comlfont.ar/font1.ttx.png"
         );
+
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/13/evitem.ar/sjistab.dat",
+            charString: "ABCD EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&"
+        );
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/13/mission.ar/sjistab.dat",
+            charString: "ABCD EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&"
+        );
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/14/sysfont.ar/sjistab.dat",
+            charString: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[] ÄäÖöÜüß„”&"
+        );
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/14/namene.ar/sjistab.dat",
+            charString: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[] ÄäÖöÜüß„”&"
+        );
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/549/sjistab.dat",
+            charString: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[] ÄäÖöÜüß„”&"
+        );
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/552/sjistab.dat",
+            charString: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[] ÄäÖöÜüß„”&"
+        );
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/2261/sjistab.dat",
+            charString: "ABCD EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&"
+        );
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/2284/sjistab.dat",
+            charString: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[] ÄäÖöÜüß„”&"
+        );
+        SJIStab.EncodeTo(
+            sjisPath: "DATA3/2449/sjistab.dat",
+            charString: "ABCD EFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]ÄäÖöÜüß„”&"
+        );
+
         Console.WriteLine("Done");
     }
 

@@ -152,7 +152,7 @@ public sealed partial class MainWindow
 
     private void ReadImportList(string list)
     {
-        string[] items = File.ReadAllLines(list);
+        string[] items = File.ReadAllLines(list).Where(item => !item.StartsWith('#')).ToArray();
         import_list.AddRange(items);
 
         SortImportFiles();
