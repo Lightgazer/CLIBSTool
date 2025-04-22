@@ -53,7 +53,7 @@ public static class Program
             collumns: 32,
             chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray(),
             kerningOffset: -1,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 12 } }
+            specialKerings: new Dictionary<char, int> { { '\u3000', 12 }, { '&', 24 } }
         );
         fatForMapSourceFont.TypeToTarget("Pictures/0/athmap05.ar/font.ttx.png", 0, "athmap05.ar");
         fatForMapSourceFont.TypeToTarget("Pictures/1/athmap04.ar/font.ttx.png", 1, "athmap04.ar");
@@ -134,9 +134,9 @@ public static class Program
             height: 30,
             width: 30,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 14 } }
+            specialKerings: new Dictionary<char, int> { { '\u3000', 14 }, { '&', 19 } }
         );
         fatWhiteSourceFont.TypeToTarget("Pictures/2256/font.ttx.png", 2256, "none");
         fatWhiteSourceFont.TypeToTarget("Pictures/2462/font.ttx.png", 2462, "none");
@@ -160,8 +160,6 @@ public static class Program
         middleWhiteSourceFont.TypeToTarget("Pictures/2284/font.ttx.png", 2284, "none", new(-4, -1), drawingOffsetY: -1);
         middleWhiteSourceFont.TypeToTarget("Pictures/2449/font.ttx.png", 2449, "none");
 
-        Console.WriteLine("Copy comrfont.ar/font0.ttx.png");
-
         var comChars = CodePage.GetCodePage(-1, mode: "import");
 
         var comrWhiteFont = new SourceFont(
@@ -171,11 +169,11 @@ public static class Program
             collumns: 46,
             chars: comChars,
             kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, { '&', 18 } }
         );
         comrWhiteFont.TypeToTarget(
             "Pictures/14/comrfont.ar/font0.ttx.png", 14, "comrfont.ar",
-            charsToType: "ÄäÖöÜüß„”".ToCharArray()
+            charsToType: "ÄäÖöÜüß„”&".ToCharArray()
             //second: "Pictures/14/comrfont.ar/font1.ttx.png"
         );
 
