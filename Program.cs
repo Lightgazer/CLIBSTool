@@ -53,7 +53,7 @@ public static class Program
             collumns: 32,
             chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray(),
             kerningOffset: -1,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 12 }, { '&', 24 } }
+            specialKerings: new Dictionary<char, int> { { '\u3000', 12 } }
         );
         fatForMapSourceFont.TypeToTarget("Pictures/0/athmap05.ar/font.ttx.png", 0, "athmap05.ar");
         fatForMapSourceFont.TypeToTarget("Pictures/1/athmap04.ar/font.ttx.png", 1, "athmap04.ar");
@@ -87,7 +87,7 @@ public static class Program
             collumns: 32,
             chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, { '&', 17 } }
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
         );
         shadowSourceFont.TypeToTarget("Pictures/14/helpmsg.ar/font.ttx.png", 14, "helpmsg.ar");
         shadowSourceFont.TypeToTarget(
@@ -108,7 +108,7 @@ public static class Program
             collumns: 32,
             chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, { '&', 15 } }
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
         );
         smallBlackSourceFont.TypeToTarget("Pictures/14/helpmsgb.ar/font.ttx.png", 14, "helpmsgb.ar");
         smallBlackSourceFont.TypeToTarget("Pictures/2263/font.ttx.png", 2263, "none", new(2, 1), drawingOffsetY: 1);
@@ -136,7 +136,7 @@ public static class Program
             collumns: 32,
             chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
             kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 14 }, { '&', 19 } }
+            specialKerings: new Dictionary<char, int> { { '\u3000', 14 } }
         );
         fatWhiteSourceFont.TypeToTarget("Pictures/2256/font.ttx.png", 2256, "none");
         fatWhiteSourceFont.TypeToTarget("Pictures/2462/font.ttx.png", 2462, "none");
@@ -169,7 +169,7 @@ public static class Program
             collumns: 46,
             chars: comChars,
             kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, { '&', 18 } }
+            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, } 
         );
         comrWhiteFont.TypeToTarget(
             "Pictures/14/comrfont.ar/font0.ttx.png", 14, "comrfont.ar",
