@@ -181,7 +181,7 @@ public static class Program
             path: "GerSourceFonts/14/comlfont.ar/font0.ttx.png",
             height: 26,
             width: 20,
-            collumns: 46,
+            collumns: 51,
             chars: comChars,
             kerningOffset: 0,
             specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
