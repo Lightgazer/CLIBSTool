@@ -9,13 +9,11 @@ public static class Program
         { "Unpack", new ("Unpack translation files from input iso", Unpack) },
         { "Pack", new ("Pack files from list*.txt files to input iso. Slps file also packed if found.", Pack) },
         { "ApplySourceFont", new ("Apply source fonts to Data3 fonts", ApplySourceFont) },
+        { "UnpackBinaryTexts", new ($"Unpack texts from japanese SLPS ({Config.SourceSLPS})", BinaryTextManager.Unpack) },
     };
 
     public static void Main(string[] args)
     {
-        //ImageConv.PNGToTTX("Pictures/2919/title.ttx.png", "DATA3/2919/title.ttx");
-        //ImageConv.TTXToPNG("DATA3/2919/title.ttx", "Pictures/2919/titleAfterConversion.ttx.png");
-
         if (args.Length == 0)
         {
             Console.WriteLine("No arguments are passed!");

@@ -5,7 +5,6 @@ public static class Config
     private static string input_iso;
     private static string output_iso;
     private static string slps;
-    private static bool copy;
     private static string isoType;
     public static string InputIsoPath
     {
@@ -56,6 +55,9 @@ public static class Config
             return 4296202240;
         }
     }
+
+    public static string SourceSLPS => "BinaryTexts/Source/SLPS_254.97";
+    public static string SourceFifteen => "BinaryTexts/Source/15";
 
     static Config()
     {

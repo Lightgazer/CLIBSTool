@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using CLIBSTool;
+using System.Text;
 using System.Text.RegularExpressions;
 
 public sealed partial class MainWindow
@@ -398,6 +399,7 @@ public sealed partial class MainWindow
 
         if (File.Exists(Config.SlpsPath))
         {
+            BinaryTextManager.Pack();
             Console.WriteLine("Status: SLPS import");
             SlpsImport();
         }

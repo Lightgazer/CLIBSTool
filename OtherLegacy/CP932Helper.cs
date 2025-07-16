@@ -1,20 +1,35 @@
-﻿public static class CP932Helper
+﻿using System.Text;
+
+public static class CP932Helper
 {
-    static readonly char[] upper_case = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-    static readonly char[] lower_case = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
-    static readonly char[] digits = "0123456789".ToCharArray();
-    static readonly char[] symbs = " 、。,.・:;?!゛゜'`\"^￣_ヽヾゝゞ〃仝々〆〇ー―-/\\~∥|…‥‘’“”()〔〕[]".ToCharArray(); // starts at 0x8140
-    static readonly char[] german_letters = "ÄäÖöÜüß„”".ToCharArray();
-    static readonly char[] german_replacement = "西我々眠見捨地人間".ToCharArray();
+    private static readonly char[] upper_case = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+    private static readonly char[] lower_case = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
+    private static readonly char[] digits = "0123456789".ToCharArray();
+    private static readonly char[] symbs = " 、。,.・:;?!゛゜'`\"^￣_ヽヾゝゞ〃仝々〆〇ー―-/\\~∥|…‥‘’“”()〔〕[]".ToCharArray(); // starts at 0x8140
+    private static readonly char[] german_letters = "ÄäÖöÜüß„”".ToCharArray();
+    private static readonly char[] german_replacement = "西我々眠見捨地人間".ToCharArray();
+
+    private static readonly Encoding encoding;
 
     static CP932Helper()
     {
-        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        encoding = Encoding.GetEncoding(932);
     }
+
+    public static string FromCP932(List<byte> bytes) => FromCP932(bytes.ToArray());
+    public static string FromCP932(byte[] bytes) => encoding.GetString(bytes).Replace("\0", "");
 
     public static byte[] ToCP932(string str)
     {
-        byte[] ret = new byte[str.ToCharArray().Length * 2 + (4 - (str.ToCharArray().Length * 2) % 4)];
+        var strChars = str.ToCharArray();
+        var size = strChars.Length * 2 + (4 - (strChars.Length * 2) % 4);
+        return ToCP932(str, size);
+    }
+
+    public static byte[] ToCP932(string str, int byteSize)
+    {
+        byte[] ret = new byte[byteSize];
         for (int g = 0; g < german_letters.Length; g++)
         {
             str = str.Replace(german_letters[g], german_replacement[g]);
@@ -109,7 +124,7 @@
                 }
                 j++;
             }
-            byte[] bt = System.Text.Encoding.GetEncoding(932).GetBytes(strch.ToString());
+            byte[] bt = encoding.GetBytes(strch.ToString());
             ret[i++] = bt[0];
             ret[i++] = bt[1];
         cont:;
