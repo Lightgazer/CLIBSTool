@@ -319,6 +319,8 @@ public sealed partial class MainWindow
 
     public void OnSaveButtonClicked()
     {
+        BinaryTextManager.Pack();
+
         string child_dir = "cDATA3" + Path.DirectorySeparatorChar;
         string data_dir = "DATA3" + Path.DirectorySeparatorChar;
         string parent_dir = "pDATA3" + Path.DirectorySeparatorChar;
@@ -399,7 +401,6 @@ public sealed partial class MainWindow
 
         if (File.Exists(Config.SlpsPath))
         {
-            BinaryTextManager.Pack();
             Console.WriteLine("Status: SLPS import");
             SlpsImport();
         }

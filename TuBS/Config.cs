@@ -58,6 +58,7 @@ public static class Config
 
     public static string SourceSLPS => "BinaryTexts/Source/SLPS_254.97";
     public static string SourceFifteen => "BinaryTexts/Source/15";
+    public static string TargetFifteen => "DATA3/15";
 
     static Config()
     {

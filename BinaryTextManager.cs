@@ -32,7 +32,7 @@ public static class BinaryTextManager
     //battle menu1
     //settings1
 
-    private static List<OffsetFile> SLPSOffsetFiles = [
+    private static readonly List<OffsetFile> SLPSOffsetFiles = [
         new ("yesno", 3867192, 24),
         new ("settings1-2", 3855280, 96),
         new ("settings1-3", 3866592, 152),
@@ -68,7 +68,7 @@ public static class BinaryTextManager
         //new ("typing", 3873312 + 832, 944 - 832)
     ];
 
-    private static List<OffsetFile> FifteenOffsetFiles = [
+    private static readonly List<OffsetFile> FifteenOffsetFiles = [
         new ("playtime", 247872, 16),
         new ("hms", 247896, 32),
         new ("fame", 247936, 24),
@@ -161,38 +161,82 @@ public static class BinaryTextManager
 
     public static void Pack()
     {
-        Console.WriteLine($"Start writing scripts to {Config.SlpsPath}");
-
-        var slpsBackup = Config.SlpsPath + "Backup";
-        if (!File.Exists(slpsBackup))
+        if (File.Exists(Config.SlpsPath))
         {
-            File.Copy(Config.SlpsPath, slpsBackup);
-        }
+            Console.WriteLine($"Start writing scripts to {Config.SlpsPath}");
 
-        try
-        {
-            using var openFile = File.Open(Config.SlpsPath, FileMode.Open);
-            using var writer = new BinaryWriter(openFile);
-            foreach (var file in SLPSOffsetFiles.Take(1))
+            var slpsBackup = Config.SlpsPath + "Backup";
+            if (!File.Exists(slpsBackup))
             {
-                WriteFile(writer, file, SLPSTextDirectory);
+                File.Copy(Config.SlpsPath, slpsBackup);
             }
-            File.Delete(slpsBackup);
+
+            try
+            {
+                using var openFile = File.Open(Config.SlpsPath, FileMode.Open);
+                using var writer = new BinaryWriter(openFile);
+                foreach (var file in SLPSOffsetFiles)
+                {
+                    WriteFile(writer, file, SLPSTextDirectory);
+                }
+                File.Delete(slpsBackup);
+            }
+            catch
+            {
+                Console.WriteLine($"Catched exception, restoring original {Config.SlpsPath} before rethrow");
+                File.Delete(Config.SlpsPath);
+                File.Copy(slpsBackup, Config.SlpsPath);
+                throw;
+            }
         }
-        catch
+        else
         {
-            Console.WriteLine($"Catched exception, restoring original {Config.SlpsPath} before rethrow");
-            File.Delete(Config.SlpsPath);
-            File.Copy(slpsBackup, Config.SlpsPath);
-            throw;
+            Console.WriteLine($"Skip writing scripts to {Config.SlpsPath}, file not found");
+        }
+
+        if (File.Exists(Config.TargetFifteen))
+        {
+            Console.WriteLine($"Start writing scripts to {Config.TargetFifteen}");
+
+            var backup = Config.TargetFifteen + "Backup";
+            if (!File.Exists(backup))
+            {
+                File.Copy(Config.TargetFifteen, backup);
+            }
+
+            try
+            {
+                using var openFile = File.Open(Config.TargetFifteen, FileMode.Open);
+                using var writer = new BinaryWriter(openFile);
+                foreach (var file in FifteenOffsetFiles)
+                {
+                    WriteFile(writer, file, FifteenTextDirectory);
+                }
+                File.Delete(backup);
+            }
+            catch
+            {
+                Console.WriteLine($"Catched exception, restoring original {Config.TargetFifteen} before rethrow");
+                File.Delete(Config.SlpsPath);
+                File.Copy(backup, Config.SlpsPath);
+                throw;
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Skip writing scripts to {Config.SlpsPath}, file not found");
         }
     }
 
     private static void WriteFile(BinaryWriter writer, OffsetFile file, string inputDirectory)
     {
         var (fileName, offset, size) = file;
-        Console.WriteLine($"Writing binary file: {fileName}");
         var inputPath = Path.Combine(inputDirectory, file.GetFileName());
+        if (!File.Exists(inputPath))
+        {
+            Console.WriteLine($"Skip writing binary file: {fileName}, source file not found");
+        }
+        Console.WriteLine($"Writing binary file: {fileName}");
         var inputLines = File.ReadAllLines(inputPath)
             .Where(line => !line.StartsWith('#'))
             .Select(CreateByteString)
