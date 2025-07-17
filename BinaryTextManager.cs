@@ -217,14 +217,14 @@ public static class BinaryTextManager
             catch
             {
                 Console.WriteLine($"Catched exception, restoring original {Config.TargetFifteen} before rethrow");
-                File.Delete(Config.SlpsPath);
-                File.Copy(backup, Config.SlpsPath);
+                File.Delete(Config.TargetFifteen);
+                File.Copy(backup, Config.TargetFifteen);
                 throw;
             }
         }
         else
         {
-            Console.WriteLine($"Skip writing scripts to {Config.SlpsPath}, file not found");
+            Console.WriteLine($"Skip writing scripts to {Config.TargetFifteen}, file not found");
         }
     }
 
