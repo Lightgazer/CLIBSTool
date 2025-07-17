@@ -83,31 +83,21 @@ public static class BinaryTextManager
 
     public static void Unpack()
     {
+        ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, SLPSOffsetFiles);
+        ReadBinarySource(Config.SourceFifteen, FifteenTextDirectory, FifteenOffsetFiles);
+    }
+
+    private static void ReadBinarySource(string sourcePath, string targetDirectory, List<OffsetFile> fileList)
+    {
+        using var openFile = File.OpenRead(sourcePath);
+        using var reader = new BinaryReader(openFile);
+        if (!Directory.Exists(targetDirectory))
         {
-            using var openFile = File.OpenRead(Config.SourceSLPS);
-            using var reader = new BinaryReader(openFile);
-
-            if (!Directory.Exists(SLPSTextDirectory))
-            {
-                Directory.CreateDirectory(SLPSTextDirectory);
-            }
-
-            foreach (var file in SLPSOffsetFiles)
-            {
-                ReadFile(reader, file, SLPSTextDirectory);
-            }
+            Directory.CreateDirectory(targetDirectory);
         }
+        foreach (var file in fileList)
         {
-            using var openFile = File.OpenRead(Config.SourceFifteen);
-            using var reader = new BinaryReader(openFile);
-            if (!Directory.Exists(FifteenTextDirectory))
-            {
-                Directory.CreateDirectory(FifteenTextDirectory);
-            }
-            foreach (var file in FifteenOffsetFiles)
-            {
-                ReadFile(reader, file, FifteenTextDirectory);
-            }
+            ReadFile(reader, file, targetDirectory);
         }
     }
 
@@ -161,70 +151,43 @@ public static class BinaryTextManager
 
     public static void Pack()
     {
-        if (File.Exists(Config.SlpsPath))
+        WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSOffsetFiles);
+        WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, FifteenOffsetFiles);
+    }
+
+    private static void WriteBinarySource(string targetPath, string sourceDirectory, List<OffsetFile> listFiles)
+    {
+        if (File.Exists(targetPath))
         {
-            Console.WriteLine($"Start writing scripts to {Config.SlpsPath}");
+            Console.WriteLine($"Start writing scripts to {targetPath}");
 
-            var slpsBackup = Config.SlpsPath + "Backup";
-            if (!File.Exists(slpsBackup))
-            {
-                File.Copy(Config.SlpsPath, slpsBackup);
-            }
-
-            try
-            {
-                using var openFile = File.Open(Config.SlpsPath, FileMode.Open);
-                using var writer = new BinaryWriter(openFile);
-                foreach (var file in SLPSOffsetFiles)
-                {
-                    WriteFile(writer, file, SLPSTextDirectory);
-                }
-                File.Delete(slpsBackup);
-            }
-            catch
-            {
-                Console.WriteLine($"Catched exception, restoring original {Config.SlpsPath} before rethrow");
-                File.Delete(Config.SlpsPath);
-                File.Copy(slpsBackup, Config.SlpsPath);
-                throw;
-            }
-        }
-        else
-        {
-            Console.WriteLine($"Skip writing scripts to {Config.SlpsPath}, file not found");
-        }
-
-        if (File.Exists(Config.TargetFifteen))
-        {
-            Console.WriteLine($"Start writing scripts to {Config.TargetFifteen}");
-
-            var backup = Config.TargetFifteen + "Backup";
+            var backup = targetPath + "Backup";
             if (!File.Exists(backup))
             {
-                File.Copy(Config.TargetFifteen, backup);
+                File.Copy(targetPath, backup);
             }
 
             try
             {
-                using var openFile = File.Open(Config.TargetFifteen, FileMode.Open);
+                using var openFile = File.Open(targetPath, FileMode.Open);
                 using var writer = new BinaryWriter(openFile);
-                foreach (var file in FifteenOffsetFiles)
+                foreach (var file in listFiles)
                 {
-                    WriteFile(writer, file, FifteenTextDirectory);
+                    WriteFile(writer, file, sourceDirectory);
                 }
                 File.Delete(backup);
             }
             catch
             {
-                Console.WriteLine($"Catched exception, restoring original {Config.TargetFifteen} before rethrow");
-                File.Delete(Config.TargetFifteen);
-                File.Copy(backup, Config.TargetFifteen);
+                Console.WriteLine($"Catched exception, restoring original {targetPath} before rethrow");
+                File.Delete(targetPath);
+                File.Copy(backup, targetPath);
                 throw;
             }
         }
         else
         {
-            Console.WriteLine($"Skip writing scripts to {Config.TargetFifteen}, file not found");
+            Console.WriteLine($"Skip writing scripts to {targetPath}, file not found");
         }
     }
 
