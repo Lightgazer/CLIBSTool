@@ -104,7 +104,7 @@ public static class BinaryTextManager
             {
                 Directory.CreateDirectory(FifteenTextDirectory);
             }
-            foreach (var file in SLPSOffsetFiles)
+            foreach (var file in FifteenOffsetFiles)
             {
                 ReadFile(reader, file, FifteenTextDirectory);
             }
@@ -121,39 +121,40 @@ public static class BinaryTextManager
 
         var bytes = reader.ReadBytes(size);
         var byteStrings = new List<ByteString>();
-        ByteString byteString = null;
-        for (int byteIndex = 0; byteIndex < size; byteIndex ++)
         {
-            var current = bytes[byteIndex];
-            
-            if (current == 0)
+            ByteString byteString = null;
+            for (int byteIndex = 0; byteIndex < size; byteIndex++)
             {
-                if (byteString is { })
+                var current = bytes[byteIndex];
+
+                if (current == 0)
                 {
-                    var result = byteString.ToString();
-                    Console.WriteLine($"Read line at {byteString.Offset + offset}");
-                    byteStrings.Add(byteString);
-                    byteString = null;
+                    if (byteString is { })
+                    {
+                        Console.WriteLine($"Read line at {byteString.Offset + offset}");
+                        byteStrings.Add(byteString);
+                        byteString = null;
+                    }
                 }
-            } 
-            else
-            {
-                byteString ??= new ByteString { Offset = byteIndex };
-                byteString.Bytes.Add(current);
+                else
+                {
+                    byteString ??= new ByteString { Offset = byteIndex };
+                    byteString.Bytes.Add(current);
+                }
             }
-        }
-        if (byteString is { })
-        {
-            byteStrings.Add(byteString);
-            byteString = null;
+            if (byteString is { })
+            {
+                byteStrings.Add(byteString);
+                byteString = null;
+            }
         }
 
         List<string> output = [];
         for (int lineIndex = 0; lineIndex < byteStrings.Count; lineIndex++)
         {
-            var (lineOffset, byteLine) = byteStrings[lineIndex];
-            var maxSize = (lineIndex < byteStrings.Count - 1 ? byteStrings[lineIndex + 1].Offset : size) - lineOffset;
-            output.Add($"{maxSize} {byteLine}");
+            var byteString = byteStrings[lineIndex];
+            var maxSize = (lineIndex < byteStrings.Count - 1 ? byteStrings[lineIndex + 1].Offset : size) - byteString.Offset;
+            output.Add($"{maxSize} {byteString}");
         }
         File.WriteAllLines(outputPath, output);
     }
