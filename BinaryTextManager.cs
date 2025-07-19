@@ -35,7 +35,7 @@ public static class BinaryTextManager
 
     private static readonly List<PointerFile> SLPSPointerFiles = [
         new ("battle menu1", 3499780, 97, 8),
-        new ("settings1", 3494360, 22, 12),  // 3494632 - settings2
+        new ("settings1", 3494360, 22, 12),
         new ("settings2", 3494632, 11, 12),
     ];
 
