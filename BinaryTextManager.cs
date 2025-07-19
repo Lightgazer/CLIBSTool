@@ -1,4 +1,5 @@
-﻿using System.Reflection.PortableExecutable;
+﻿using System;
+using System.Reflection.PortableExecutable;
 
 namespace CLIBSTool;
 
@@ -25,12 +26,27 @@ public static class BinaryTextManager
         }
     }
 
+    private record class PointerFile(string Name, int PointerOffset, int PointerCount, int PointerStep)
+    {
+        public const int PointerDelta = 1048320;
+
+        public string GetFileName() => Path.Combine(Name + ".txt");
+    }
+
+    private static readonly List<PointerFile> SLPSPointerFiles = [
+        new ("battle menu1", 3499780, 97, 8),
+        new ("settings1", 3494360, 22, 12),  // 3494632 - settings2
+        new ("settings2", 3494632, 11, 12),
+    ];
+
+    // pointer storage
+    // pos     size
+    // 3852736 2480
+
     private record class OffsetFile(string Name, int Offset, int Size)
     {
         public string GetFileName() => Path.Combine(Name + ".txt");
     }
-    //battle menu1
-    //settings1
 
     private static readonly List<OffsetFile> SLPSOffsetFiles = [
         new ("yesno", 3867192, 24),
@@ -55,7 +71,7 @@ public static class BinaryTextManager
         new ("typing", 3874368, 112),
         new ("saveerr", 3869776, 40),
         new ("saveerr2", 3869840, 64),
-        new ("prep", 3867824, 768),  // handle lime break
+        new ("prep", 3867824, 768),
         new ("limit", 3867648, 112),
         new ("file4", 3876336, 112),
         new ("file4copy", 3874144, 112),
@@ -75,8 +91,6 @@ public static class BinaryTextManager
         new ("survived", 248032, 176)
     ];
 
-    //247872
-
     private static string BinaryTextsDirectory = "BinaryTexts";
     private static string SLPSTextDirectory = Path.Combine(BinaryTextsDirectory, "SLPS");
     private static string FifteenTextDirectory = Path.Combine(BinaryTextsDirectory, "15");
@@ -84,6 +98,7 @@ public static class BinaryTextManager
     public static void Unpack()
     {
         ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, SLPSOffsetFiles);
+        ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, SLPSPointerFiles);
         ReadBinarySource(Config.SourceFifteen, FifteenTextDirectory, FifteenOffsetFiles);
     }
 
@@ -147,6 +162,70 @@ public static class BinaryTextManager
             output.Add($"{maxSize} {byteString}");
         }
         File.WriteAllLines(outputPath, output);
+    }
+
+    private static void ReadBinarySource(string sourcePath, string targetDirectory, List<PointerFile> fileList)
+    {
+        using var openFile = File.OpenRead(sourcePath);
+        using var reader = new BinaryReader(openFile);
+        if (!Directory.Exists(targetDirectory))
+        {
+            Directory.CreateDirectory(targetDirectory);
+        }
+        foreach (var file in fileList)
+        {
+            ReadFile(reader, file, targetDirectory);
+        }
+    }
+
+    private static void ReadFile(BinaryReader reader, PointerFile file, string outputDirectory)
+    {
+        var outputPath = Path.Combine(outputDirectory, file.GetFileName());
+        Console.WriteLine($"Reading {file.Name} to {outputPath}");
+
+        var pointerOffset = file.PointerOffset;
+        var pointers = new int[file.PointerCount];
+        var pointersOutput = new int[file.PointerCount];
+        for (int i = 0; i < pointers.Length; i++)
+        {
+            reader.BaseStream.Position = pointerOffset + i * file.PointerStep;
+            pointers[i] = reader.ReadInt32();
+            pointersOutput[i] = pointers[i] - PointerFile.PointerDelta;
+        }
+
+        var outputLines = new List<string>();
+        for (int i = 0; i < pointers.Length; i++)
+        {
+            var pointer = pointers[i];
+            if (pointer == 0)
+            {
+                outputLines.Add($"[Zero Pointer]");
+                continue;
+            }
+            reader.BaseStream.Position = pointer - PointerFile.PointerDelta;
+            var bytes = new List<byte>();
+            byte currentByte;
+            do
+            {
+                currentByte = reader.ReadByte();
+                bytes.Add(currentByte);
+            } while (currentByte > 0);
+
+            var lineNumberString = (i + 1).ToString();
+            var secondNumber = 0;
+            while (i + 1 < pointers.Length && pointers[i + 1] == pointer)
+            {
+                i++;
+                secondNumber = i;
+            }
+            if (secondNumber > 0)
+            {
+                lineNumberString = $"{lineNumberString} to {secondNumber + 1}";
+            }
+            outputLines.Add($"Line {lineNumberString}: {CP932Helper.FromCP932(bytes)}");
+        }
+
+        File.WriteAllLines(outputPath, outputLines);
     }
 
     public static void Pack()
