@@ -3,7 +3,8 @@ using System.Reflection.PortableExecutable;
 
 namespace CLIBSTool;
 
-public class BinaryLineContainsLineBreakException : Exception { }
+public class WrongLineEndingException : Exception { }
+public class StorageNotFoundException : Exception { }
 
 public static class BinaryTextManager
 {
@@ -33,20 +34,30 @@ public static class BinaryTextManager
         public string GetFileName() => Path.Combine(Name + ".txt");
     }
 
+    private record class OffsetFile(string Name, int Offset, int Size)
+    {
+        public string GetFileName() => Path.Combine(Name + ".txt");
+    }
+
+    private class PointerStringStorage(int offset, int size)
+    {
+        public readonly int Offset = offset;
+        public readonly int Size = size;
+        public int Bracket = 0;
+    }
+
     private static readonly List<PointerFile> SLPSPointerFiles = [
         new ("battle menu1", 3499780, 97, 8),
         new ("settings1", 3494360, 22, 12),
         new ("settings2", 3494632, 11, 12),
     ];
 
-    // pointer storage
-    // pos     size
-    // 3852736 2480
-
-    private record class OffsetFile(string Name, int Offset, int Size)
-    {
-        public string GetFileName() => Path.Combine(Name + ".txt");
-    }
+    private static readonly List<PointerStringStorage> Storages = [
+        new(3852736, 2480),
+        new(3856176, 3888),
+        new(3511476, 1274),
+        new(3260244, 1020),
+    ];
 
     private static readonly List<OffsetFile> SLPSOffsetFiles = [
         new ("yesno", 3867192, 24),
@@ -90,6 +101,8 @@ public static class BinaryTextManager
         new ("fame", 247936, 24),
         new ("survived", 248032, 176)
     ];
+
+    private const string ZeroPointer = $"[Zero Pointer]";
 
     private static string BinaryTextsDirectory = "BinaryTexts";
     private static string SLPSTextDirectory = Path.Combine(BinaryTextsDirectory, "SLPS");
@@ -199,7 +212,7 @@ public static class BinaryTextManager
             var pointer = pointers[i];
             if (pointer == 0)
             {
-                outputLines.Add($"[Zero Pointer]");
+                outputLines.Add(ZeroPointer);
                 continue;
             }
             reader.BaseStream.Position = pointer - PointerFile.PointerDelta;
@@ -231,6 +244,7 @@ public static class BinaryTextManager
     public static void Pack()
     {
         WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSOffsetFiles);
+        WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, SLPSPointerFiles);
         WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, FifteenOffsetFiles);
     }
 
@@ -301,6 +315,111 @@ public static class BinaryTextManager
             var lineSize = splitedLine[0];
             var lineContent = splitedLine[1];
             return (int.Parse(lineSize), lineContent);
+        }
+    }
+
+    private static void WriteBinarySource(string targetPath, string sourceDirectory, List<PointerFile> listFiles)
+    {
+        if (File.Exists(targetPath))
+        {
+            Console.WriteLine($"Start writing scripts to {targetPath}");
+
+            var backup = targetPath + "Backup";
+            if (!File.Exists(backup))
+            {
+                File.Copy(targetPath, backup);
+            }
+
+            try
+            {
+                using var openFile = File.Open(targetPath, FileMode.Open);
+                using var writer = new BinaryWriter(openFile);
+                foreach (var file in listFiles)
+                {
+                    WriteFile(writer, file, sourceDirectory);
+                }
+                File.Delete(backup);
+            }
+            catch
+            {
+                Console.WriteLine($"Catched exception, restoring original {targetPath} before rethrow");
+                File.Delete(targetPath);
+                File.Copy(backup, targetPath);
+                throw;
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Skip writing scripts to {targetPath}, file not found");
+        }
+    }
+
+    private static void WriteFile(BinaryWriter writer, PointerFile file, string inputDirectory)
+    {
+
+        var inputPath = Path.Combine(inputDirectory, file.GetFileName());
+        if (!File.Exists(inputPath))
+        {
+            Console.WriteLine($"Skip writing binary file: {file.Name}, source file not found");
+        }
+        Console.WriteLine($"Writing binary file: {file.Name}");
+        var inputLines = File.ReadAllLines(inputPath)
+            .Where(line => !line.StartsWith('#'))
+            .ToArray();
+
+        var pointers = new int[file.PointerCount];
+        foreach (var inputLine in inputLines)
+        {
+            if (inputLine == ZeroPointer) continue;
+
+            var inputArray = inputLine.Split(':', 2);
+            var inputString = inputArray[1];
+            var inputBytes = CP932Helper.ToCP932(inputString, inputString.Length * 2);
+            if (inputBytes[^1] + inputBytes[^2] != 0)
+            {
+                throw new WrongLineEndingException();
+            }
+
+            if (inputBytes[^3] + inputBytes[^4] == 0)
+            {
+                throw new WrongLineEndingException();
+            }
+
+            var storage = GetStorage(inputBytes.Length);
+            var realPointer = storage.Offset + storage.Bracket;
+            writer.BaseStream.Position = realPointer;
+            writer.Write(inputBytes);
+            storage.Bracket += inputBytes.Length;
+            var lineNumberString = inputArray[0].Replace("Line ", "");
+
+            if (lineNumberString.Contains("to"))
+            {
+                var startAndEnd = inputLine.Split(" to ", 2);
+                var startIndex = int.Parse(startAndEnd[0]);
+                var endIndex = int.Parse(startAndEnd[1]);
+                for (var i = startIndex; i <= endIndex; i++)
+                {
+                    pointers[i] = realPointer + PointerFile.PointerDelta;
+                }
+            }
+            else
+            {
+                var pointerIndex = int.Parse(lineNumberString);
+                pointers[pointerIndex] = realPointer + PointerFile.PointerDelta;
+            }
+        }
+
+        static PointerStringStorage GetStorage(int size)
+        {
+            foreach (var storage in Storages)
+            {
+                if (storage.Bracket + size <= storage.Size)
+                {
+                    return storage;
+                }
+            }
+
+            throw new StorageNotFoundException();
         }
     }
 }
