@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection.PortableExecutable;
-
-namespace CLIBSTool;
+﻿namespace CLIBSTool;
 
 public class WrongLineEndingException : Exception { }
 public class StorageNotFoundException : Exception { }
@@ -85,7 +82,7 @@ public static class BinaryTextManager
         new ("prep", 3867824, 768),
         new ("limit", 3867648, 112),
         new ("file4", 3876336, 112),
-        new ("file4copy", 3874144, 112),
+        // new ("file4copy", 3874144, 112),
         new ("sysfile", 3864544, 120),
 
         // this does not translated in English version
@@ -274,7 +271,7 @@ public static class BinaryTextManager
             {
                 Console.WriteLine($"Catched exception, restoring original {targetPath} before rethrow");
                 File.Delete(targetPath);
-                File.Copy(backup, targetPath);
+                File.Move(backup, targetPath);
                 throw;
             }
         }
@@ -294,7 +291,7 @@ public static class BinaryTextManager
         }
         Console.WriteLine($"Writing binary file: {fileName}");
         var inputLines = File.ReadAllLines(inputPath)
-            .Where(line => !line.StartsWith('#'))
+            .Where(line => !line.StartsWith('#') && !string.IsNullOrEmpty(line))
             .Select(CreateByteString)
             .ToArray();
 
@@ -302,6 +299,11 @@ public static class BinaryTextManager
         for (int lineIndex = 0; lineIndex < inputLines.Length; lineIndex++)
         {
             var (lineSize, line) = inputLines[lineIndex];
+            if (line == "skill_exp_opt2")
+            {
+                lineOffset += lineSize;
+                continue;
+            }
             line = line.Replace('⏎', '\n');
             var bytes = CP932Helper.ToCP932(line, lineSize);
             writer.BaseStream.Position = file.Offset + lineOffset;
@@ -312,6 +314,9 @@ public static class BinaryTextManager
         (int, string) CreateByteString(string input)
         {
             var splitedLine = input.Split(' ', 2);
+            if (splitedLine.Length != 2) {
+                throw new Exception($"Line [{input}] is not readable");
+            }
             var lineSize = splitedLine[0];
             var lineContent = splitedLine[1];
             return (int.Parse(lineSize), lineContent);
@@ -344,7 +349,7 @@ public static class BinaryTextManager
             {
                 Console.WriteLine($"Catched exception, restoring original {targetPath} before rethrow");
                 File.Delete(targetPath);
-                File.Copy(backup, targetPath);
+                File.Move(backup, targetPath);
                 throw;
             }
         }

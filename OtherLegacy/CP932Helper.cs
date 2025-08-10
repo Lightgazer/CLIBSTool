@@ -1,11 +1,13 @@
 ﻿using System.Text;
+using System.Text.Json;
 
 public static class CP932Helper
 {
     private static readonly char[] upper_case = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
     private static readonly char[] lower_case = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
     private static readonly char[] digits = "0123456789".ToCharArray();
-    private static readonly char[] symbs = " 、。,.・:;?!゛゜'`\"^￣_ヽヾゝゞ〃仝々〆〇ー―-/\\~∥|…‥‘’“”()〔〕[]".ToCharArray(); // starts at 0x8140
+    private static readonly char[] symbs =
+        " 、。,.・:;?!゛゜'`\"^￣_ヽヾゝゞ〃仝々〆〇ー―-/\\~∥|…‥‘’“”()〔〕[]{}〈〉《》「」『』【】+－±×÷=≠<>".ToCharArray(); // starts at 0x8140
     private static readonly char[] german_letters = "ÄäÖöÜüß„”".ToCharArray();
     private static readonly char[] german_replacement = "西我々眠見捨地人間".ToCharArray();
 
@@ -38,46 +40,51 @@ public static class CP932Helper
         int i = 0;
         foreach (char strch in str)
         {
+            if (strch == '\n')
+            {
+                AddByte(0x0A);
+                continue;
+            }
             if (strch == '\u3000' | strch == ' ')
             {
-                ret[i++] = 0x87;
-                ret[i++] = 0x60;
+                AddByte(0x87);
+                AddByte(0x60);
                 continue;
             }
             if (strch == '#')
             {
-                ret[i++] = 0x81;
-                ret[i++] = 0x94;
+                AddByte(0x81);
+                AddByte(0x94);
                 continue;
             }
             if (strch == '&')
             {
-                ret[i++] = 0x81;
-                ret[i++] = 0x95;
+                AddByte(0x81);
+                AddByte(0x95);
                 continue;
             }
             if (strch == '*')
             {
-                ret[i++] = 0x81;
-                ret[i++] = 0x96;
+                AddByte(0x81);
+                AddByte(0x96);
                 continue;
             }
             if (strch == '%')
             {
-                ret[i++] = 0x81;
-                ret[i++] = 0x93;
+                AddByte(0x81);
+                AddByte(0x93);
                 continue;
             }
             if (strch == '+')
             {
-                ret[i++] = 0x81;
-                ret[i++] = 0x7B;
+                AddByte(0x81);
+                AddByte(0x7B);
                 continue;
             }
             if (strch == '×')
             {
-                ret[i++] = 0x81;
-                ret[i++] = 0x7E;
+                AddByte(0x81);
+                AddByte(0x7E);
                 continue;
             }
             byte j = 0;
@@ -85,8 +92,8 @@ public static class CP932Helper
             {
                 if (strch == codech)
                 {
-                    ret[i++] = 0x82;
-                    ret[i++] = (byte)(0x60 + j);
+                    AddByte(0x82);
+                    AddByte((byte)(0x60 + j));
                     goto cont;
                 }
                 j++;
@@ -96,8 +103,8 @@ public static class CP932Helper
             {
                 if (strch == codech)
                 {
-                    ret[i++] = 0x82;
-                    ret[i++] = (byte)(0x81 + j);
+                    AddByte(0x82);
+                    AddByte((byte)(0x81 + j));
                     goto cont;
                 }
                 j++;
@@ -107,8 +114,8 @@ public static class CP932Helper
             {
                 if (strch == codech)
                 {
-                    ret[i++] = 0x82;
-                    ret[i++] = (byte)(0x4F + j);
+                    AddByte(0x82);
+                    AddByte((byte)(0x4F + j));
                     goto cont;
                 }
                 j++;
@@ -118,17 +125,39 @@ public static class CP932Helper
             {
                 if (strch == codech)
                 {
-                    ret[i++] = 0x81;
-                    ret[i++] = (byte)(0x40 + j);
+                    AddByte(0x81);
+                    AddByte((byte)(0x40 + j));
                     goto cont;
                 }
                 j++;
             }
             byte[] bt = encoding.GetBytes(strch.ToString());
-            ret[i++] = bt[0];
-            ret[i++] = bt[1];
+            AddByte(bt[0]);
+            AddByte(bt[1]);
         cont:;
         }
+
+        if (ret.Length < i)
+        {
+            Console.WriteLine($"[Error] Line [{JsonEncodedText.Encode(str)}] overflows length restriction by {i - ret.Length} bytes");
+            // null termiate string anyway
+            if (ret[^2] >= 0x81)
+            {
+                ret[^2] = 0x00;
+            }
+            ret[^1] = 0x00; 
+        }
+
         return ret;
+
+        void AddByte(byte b)
+        {
+            if (ret.Length > i)
+            {
+                ret[i] = b;
+            }
+
+            i++;
+        }
     }
 }
