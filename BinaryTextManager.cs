@@ -241,7 +241,7 @@ public static class BinaryTextManager
     public static void Pack()
     {
         WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSOffsetFiles);
-        WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, SLPSPointerFiles);
+        WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSPointerFiles);
         WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, FifteenOffsetFiles);
     }
 
@@ -377,16 +377,18 @@ public static class BinaryTextManager
         {
             if (inputLine == ZeroPointer) continue;
 
-            var inputArray = inputLine.Split(':', 2);
+            var inputArray = inputLine.Split(": ", 2);
             var inputString = inputArray[1];
-            var inputBytes = CP932Helper.ToCP932(inputString, inputString.Length * 2);
+            var inputBytes = CP932Helper.ToCP932(inputString, (inputString.Length + 1) * 2);
             if (inputBytes[^1] + inputBytes[^2] != 0)
             {
+                Console.WriteLine($"Problem with {inputLine}");
                 throw new WrongLineEndingException();
             }
 
             if (inputBytes[^3] + inputBytes[^4] == 0)
             {
+                Console.WriteLine($"Problem with {inputLine}");
                 throw new WrongLineEndingException();
             }
 
@@ -400,8 +402,8 @@ public static class BinaryTextManager
             if (lineNumberString.Contains("to"))
             {
                 var startAndEnd = inputLine.Split(" to ", 2);
-                var startIndex = int.Parse(startAndEnd[0]);
-                var endIndex = int.Parse(startAndEnd[1]);
+                var startIndex = int.Parse(startAndEnd[0]) - 1;
+                var endIndex = int.Parse(startAndEnd[1]) - 1;
                 for (var i = startIndex; i <= endIndex; i++)
                 {
                     pointers[i] = realPointer + PointerFile.PointerDelta;
@@ -409,7 +411,7 @@ public static class BinaryTextManager
             }
             else
             {
-                var pointerIndex = int.Parse(lineNumberString);
+                var pointerIndex = int.Parse(lineNumberString) - 1;
                 pointers[pointerIndex] = realPointer + PointerFile.PointerDelta;
             }
         }
