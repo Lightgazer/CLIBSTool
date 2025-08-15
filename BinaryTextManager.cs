@@ -1,4 +1,6 @@
-﻿namespace CLIBSTool;
+﻿using System.Reflection.PortableExecutable;
+
+namespace CLIBSTool;
 
 public class WrongLineEndingException : Exception { }
 public class StorageNotFoundException : Exception { }
@@ -414,6 +416,13 @@ public static class BinaryTextManager
                 var pointerIndex = int.Parse(lineNumberString) - 1;
                 pointers[pointerIndex] = realPointer + PointerFile.PointerDelta;
             }
+        }
+
+        var pointerOffset = file.PointerOffset;
+        for (int i = 0; i < pointers.Length; i++)
+        {
+            writer.BaseStream.Position = pointerOffset + i * file.PointerStep;
+            writer.Write(pointers[i]);
         }
 
         static PointerStringStorage GetStorage(int size)
