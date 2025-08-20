@@ -29,13 +29,10 @@ public static class CP932Helper
         return ToCP932(str, size);
     }
 
-    public static byte[] ToCP932(string str, int byteSize)
+    public static byte[] ToCP932(string input, int byteSize)
     {
         byte[] ret = new byte[byteSize];
-        for (int g = 0; g < german_letters.Length; g++)
-        {
-            str = str.Replace(german_letters[g], german_replacement[g]);
-        }
+        var str = ReplaceGermanLetters(input);
 
         int i = 0;
         foreach (char strch in str)
@@ -49,6 +46,24 @@ public static class CP932Helper
             {
                 AddByte(0x87);
                 AddByte(0x60);
+                continue;
+            }
+            if (strch == '○')
+            {
+                AddByte(0x81);
+                AddByte(0x9B);
+                continue;
+            }
+            if (strch == '□')
+            {
+                AddByte(0x81);
+                AddByte(0xA0);
+                continue;
+            }
+            if (strch == '△')
+            {
+                AddByte(0x81);
+                AddByte(0xA2);
                 continue;
             }
             if (strch == '#')
@@ -137,9 +152,9 @@ public static class CP932Helper
         cont:;
         }
 
-        if (ret.Length < i)
+        if (ret.Length <= i)
         {
-            Console.WriteLine($"[Error] Line [{JsonEncodedText.Encode(str)}] overflows length restriction by {i - ret.Length} bytes");
+            Console.WriteLine($"[Error] Line [{JsonEncodedText.Encode(input)}] overflows length restriction by {i - ret.Length + 1} bytes");
             // null termiate string anyway
             if (ret[^2] >= 0x81)
             {
@@ -159,5 +174,168 @@ public static class CP932Helper
 
             i++;
         }
+    }
+
+    public static byte[] ToComplexEn(string str, int size)
+    {
+        byte[] ret = new byte[size];
+        bool spflag = false;
+        str = ReplaceGermanLetters(str);
+
+        int i = 0;
+        for (int j = 0; j < str.Length; j++)
+        {
+            if (spflag == true)
+            {
+                if (str[j] == '%')
+                {
+                    AddByte(0x25);
+                    continue;
+                }
+                if (str[j] == 'C')
+                    AddByte(0x43);
+                if (str[j] == 'D')
+                    AddByte(0x44);
+                if (str[j] == 'a')
+                    AddByte(0x61);
+                if (str[j] == 'd')
+                    AddByte(0x64);
+                if (str[j] == 'h')
+                    AddByte(0x68);
+                if (str[j] == 'i')
+                    AddByte(0x69);
+                if (str[j] == 'n')
+                    AddByte(0x6E);
+                if (str[j] == 's')
+                    AddByte(0x73);
+                spflag = false;
+                continue;
+            }
+            if (str[j] == '%')
+            {
+                spflag = true;
+                AddByte(0x25);
+                continue;
+            }
+            if (str[j] == ' ' | str[j] == '\u3000')
+            {
+                AddByte(0x20);
+                continue;
+            }
+            if (str[j] == '\n')
+            {
+                AddByte(0x0A);
+                continue;
+            }
+            var cp932Char = CharToCP932(str[j]);
+            AddByte(cp932Char.Item1);
+            AddByte(cp932Char.Item2);
+        }
+
+        if (ret.Length <= i)
+        {
+            Console.WriteLine($"[Error] Line [{JsonEncodedText.Encode(str)}] overflows length restriction by {i - ret.Length + 1} bytes");
+            // null termiate string anyway
+            if (ret[^2] >= 0x81)
+            {
+                ret[^2] = 0x00;
+            }
+            ret[^1] = 0x00;
+        }
+
+        return ret;
+
+        void AddByte(byte b)
+        {
+            if (ret.Length > i)
+            {
+                ret[i] = b;
+            }
+
+            i++;
+        }
+    }
+
+    private static (byte, byte) CharToCP932(char ch)
+    {
+        if (ch == '\u3000' | ch == ' ')
+        {
+            return (0x87, 0x60);
+        }
+        if (ch == '○')
+        {
+            return (0x81, 0x9B);
+        }
+        if (ch == '□')
+        {
+            return (0x81, 0xA0);
+        }
+        if (ch == '△')
+        {
+            return (0x81, 0xA2);
+        }
+        if (ch == '&')
+        {
+            return (0x81, 0x95);
+        }
+        if (ch == '%')
+        {
+            return (0x81, 0x93);
+        }
+        if (ch == '+')
+        {
+            return (0x81, 0x7B);
+        }
+        if (ch == '×')
+        {
+            return (0x81, 0x7E);
+        }
+        byte j = 0;
+        foreach (char codech in upper_case)
+        {
+            if (ch == codech)
+            {
+                return (0x82, (byte)(0x60 + j));
+            }
+            j++;
+        }
+        j = 0;
+        foreach (char codech in lower_case)
+        {
+            if (ch == codech)
+            {
+                return (0x82, (byte)(0x81 + j));
+            }
+            j++;
+        }
+        j = 0;
+        foreach (char codech in digits)
+        {
+            if (ch == codech)
+            {
+                return (0x82, (byte)(0x4F + j));
+            }
+            j++;
+        }
+        j = 0;
+        foreach (char codech in symbs)
+        {
+            if (ch == codech)
+            {
+                return (0x81, (byte)(0x40 + j));
+            }
+            j++;
+        }
+        byte[] bt = encoding.GetBytes(ch.ToString());
+        return (bt[0], bt[1]);
+    }
+
+    private static string ReplaceGermanLetters(string str)
+    {
+        for (int g = 0; g < german_letters.Length; g++)
+        {
+            str = str.Replace(german_letters[g], german_replacement[g]);
+        }
+        return str;
     }
 }

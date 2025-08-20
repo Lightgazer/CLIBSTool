@@ -33,7 +33,7 @@ public static class BinaryTextManager
         public string GetFileName() => Path.Combine(Name + ".txt");
     }
 
-    private record class OffsetFile(string Name, int Offset, int Size)
+    private record class OffsetFile(string Name, int Offset, int Size, Encoding Encoding)
     {
         public string GetFileName() => Path.Combine(Name + ".txt");
     }
@@ -43,6 +43,12 @@ public static class BinaryTextManager
         public readonly int Offset = offset;
         public readonly int Size = size;
         public int Bracket = 0;
+    }
+
+    private enum Encoding
+    {
+        Default,
+        Complex
     }
 
     private static readonly List<PointerFile> SLPSPointerFiles = [
@@ -56,36 +62,37 @@ public static class BinaryTextManager
         new(3856176, 3888),
         new(3511476, 1274),
         new(3260244, 1020),
+        new(3272620, 6000)
     ];
 
     private static readonly List<OffsetFile> SLPSOffsetFiles = [
-        new ("yesno", 3867192, 24),
-        new ("settings1-2", 3855280, 96),
-        new ("settings1-3", 3866592, 152),
-        new ("settings1-4", 3866912, 32),
-        new ("buttons1", 3846512, 288),
-        new ("buttons2", 3845872, 128),
-        new ("exchange", 3876576, 46),
-        new ("select1", 3876688, 142),
-        new ("select2", 3876864, 110),
-        new ("select3", 3877008, 494),
-        new ("skill", 3823680, 64),
-        new ("page", 3883832, 32),
-        new ("savename", 3864880, 64),
-        new ("dinar", 3843952, 16),
-        new ("sale1", 3852032, 96),
-        new ("file5", 3879168, 192),
-        new ("captured", 3880416, 256),
-        new ("wpf1", 3847912, 2528),
-        new ("wpf2", 3838424, 544),
-        new ("typing", 3874368, 112),
-        new ("saveerr", 3869776, 40),
-        new ("saveerr2", 3869840, 64),
-        new ("prep", 3867824, 768),
-        new ("limit", 3867648, 112),
-        new ("file4", 3876336, 112),
+        new ("yesno", 3867192, 24, Encoding.Default),
+        new ("settings1-2", 3855280, 96, Encoding.Default),
+        new ("settings1-3", 3866592, 152, Encoding.Default),
+        new ("settings1-4", 3866912, 32, Encoding.Default),
+        new ("buttons1", 3846512, 288, Encoding.Default),
+        new ("buttons2", 3845872, 128, Encoding.Default),
+        new ("exchange", 3876576, 46, Encoding.Default),
+        new ("select1", 3876688, 142, Encoding.Default),
+        new ("select2", 3876864, 110, Encoding.Default),
+        new ("select3", 3877008, 494, Encoding.Default),
+        new ("skill", 3823680, 64, Encoding.Complex),
+        new ("page", 3883832, 32, Encoding.Default),
+        new ("savename", 3864880, 64, Encoding.Complex),
+        new ("dinar", 3843952, 16, Encoding.Default),
+        new ("sale1", 3852032, 96, Encoding.Default),
+        new ("file5", 3879168, 192, Encoding.Default),
+        new ("captured", 3880416, 256, Encoding.Default),
+        new ("wpf1", 3847912, 2528, Encoding.Complex),
+        new ("wpf2", 3838424, 544, Encoding.Complex),
+        new ("typing", 3874368, 112, Encoding.Complex),
+        new ("saveerr", 3869776, 40, Encoding.Default),
+        new ("saveerr2", 3869840, 64, Encoding.Default),
+        new ("prep", 3867824, 768, Encoding.Default),
+        new ("limit", 3867648, 112, Encoding.Default),
+        new ("file4", 3876336, 112, Encoding.Default),
         // new ("file4copy", 3874144, 112),
-        new ("sysfile", 3864544, 120),
+        new ("sysfile", 3864544, 120, Encoding.Complex),
 
         // this does not translated in English version
         //new ("title", 3805024, 16),
@@ -95,10 +102,10 @@ public static class BinaryTextManager
     ];
 
     private static readonly List<OffsetFile> FifteenOffsetFiles = [
-        new ("playtime", 247872, 16),
-        new ("hms", 247896, 32),
-        new ("fame", 247936, 24),
-        new ("survived", 248032, 176)
+        new ("playtime", 247872, 16, Encoding.Default),
+        new ("hms", 247896, 32, Encoding.Default),
+        new ("fame", 247936, 24, Encoding.Default),
+        new ("survived", 248032, 176, Encoding.Default)
     ];
 
     private const string ZeroPointer = $"[Zero Pointer]";
@@ -130,7 +137,9 @@ public static class BinaryTextManager
 
     private static void ReadFile(BinaryReader reader, OffsetFile file, string outputDirectory)
     {
-        var (fileName, offset, size) = file;
+        var fileName = file.Name;
+        var offset = file.Offset;
+        var size = file.Size;
         var outputPath = Path.Combine(outputDirectory, file.GetFileName());
         Console.WriteLine($"Reading {fileName} to {outputPath}");
 
@@ -285,7 +294,7 @@ public static class BinaryTextManager
 
     private static void WriteFile(BinaryWriter writer, OffsetFile file, string inputDirectory)
     {
-        var (fileName, offset, size) = file;
+        var (fileName, offset, size, encoding) = file;
         var inputPath = Path.Combine(inputDirectory, file.GetFileName());
         if (!File.Exists(inputPath))
         {
@@ -307,7 +316,7 @@ public static class BinaryTextManager
                 continue;
             }
             line = line.Replace('⏎', '\n');
-            var bytes = CP932Helper.ToCP932(line, lineSize);
+            var bytes = ToBytes(line, lineSize);
             writer.BaseStream.Position = file.Offset + lineOffset;
             writer.Write(bytes);
             lineOffset += lineSize;
@@ -322,6 +331,19 @@ public static class BinaryTextManager
             var lineSize = splitedLine[0];
             var lineContent = splitedLine[1];
             return (int.Parse(lineSize), lineContent);
+        }
+
+        byte[] ToBytes(string line, int lineSize)
+        {
+            if (encoding == Encoding.Default)
+            {
+                return CP932Helper.ToCP932(line, lineSize);
+            }
+            if (encoding == Encoding.Complex)
+            {
+                return CP932Helper.ToComplexEn(line, lineSize);
+            }
+            throw new NotImplementedException();
         }
     }
 
@@ -403,7 +425,7 @@ public static class BinaryTextManager
 
             if (lineNumberString.Contains("to"))
             {
-                var startAndEnd = inputLine.Split(" to ", 2);
+                var startAndEnd = lineNumberString.Split(" to ", 2);
                 var startIndex = int.Parse(startAndEnd[0]) - 1;
                 var endIndex = int.Parse(startAndEnd[1]) - 1;
                 for (var i = startIndex; i <= endIndex; i++)

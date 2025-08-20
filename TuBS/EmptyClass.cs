@@ -57,7 +57,7 @@ public sealed partial class MainWindow
             ImageConv.TTXToPNG(pic, outpath);
         }
 
-        string[] screens = new string[] {"3057", "3058", "3059", "3101", "3107", "3117", "3123", "3124", "3133", "3146",
+        string[] screens = new string[] {"3030", "3057", "3058", "3059", "3101", "3107", "3117", "3123", "3124", "3133", "3146",
             "3165", "3188", "3251", "3258", "3297"
         };
         foreach (string screen in screens)
