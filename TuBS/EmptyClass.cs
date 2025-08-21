@@ -105,7 +105,7 @@ public sealed partial class MainWindow
             if (fileinfo.Extension == ".png")
             {
                 sliced_path = file.Split(new string[] { "Pictures" + System.IO.Path.DirectorySeparatorChar }, StringSplitOptions.None);
-                if (Int32.Parse(sliced_path[sliced_path.Length - 1].Split(System.IO.Path.DirectorySeparatorChar)[0].Split('.')[0]) < 3057)
+                if (Int32.Parse(sliced_path[sliced_path.Length - 1].Split(System.IO.Path.DirectorySeparatorChar)[0].Split('.')[0]) < 3030)
                     ttx_list.Add(sliced_path[sliced_path.Length - 1]);
                 else
                     tb_list.Add(sliced_path[sliced_path.Length - 1]);
