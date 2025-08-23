@@ -90,37 +90,46 @@ public sealed partial class MainWindow
         }
     }
 
-    protected void PackDATA(string[] pathed_parents)
+    private void PackDATA(string[] pathed_parents)
     {
         if (pathed_parents.Length == 0)
+        {
+            Console.WriteLine("DATA3 rebuilding aborted, no pathed parent files");
             return;
+        }
 
         Console.WriteLine("Status: DATA3 rebuilding");
+        Console.WriteLine($"Amount of pathed parents {pathed_parents.Length}");
      //   progressbar.Fraction = 0.6;
         if (!File.Exists(Config.OutputIsoPath))
             File.Copy(Config.InputIsoPath, Config.OutputIsoPath);
 
-        int[] new_flag = new int[236];
-        Array.Sort(pathed_parents, (a, b) => int.Parse(Regex.Replace(a, "[^0-9]", "")) - int.Parse(Regex.Replace(b, "[^0-9]", "")));
+        var new_flag = new Dictionary<int, string>();
         for (int i = 0; i < pathed_parents.Length; i++)
-            new_flag[i] = Int32.Parse(pathed_parents[i].Split(Path.DirectorySeparatorChar)[1]);
+        {
+            var parentPath = pathed_parents[i];
+            var splitedPath = pathed_parents[i].Split(Path.DirectorySeparatorChar);
+            if (splitedPath.Length < 2)
+            {
+                throw new Exception($"Can not guess parent number from path: {pathed_parents[i]}");
+            }
+            new_flag.Add(Int32.Parse(splitedPath[1]), parentPath);
+        }
 
         BinaryWriter writer = new BinaryWriter((Stream)new FileStream(Config.OutputIsoPath, FileMode.Open));
         BinaryReader reader = new BinaryReader(File.OpenRead(Config.InputIsoPath));
 
         writer.BaseStream.Position = Config.OffsetDATA3;
         reader.BaseStream.Position = Config.OffsetDATA3;
-        int path_index = 0;
         for (int index = 0; index < 3741; ++index)
         {
-            if (index == new_flag[path_index])
+            if (new_flag.TryGetValue(index, out var parentPath))
             {
                 Data4.offset[index] = writer.BaseStream.Position - Config.OffsetDATA3;
-                byte[] buffer = File.ReadAllBytes(pathed_parents[path_index]);
+                byte[] buffer = File.ReadAllBytes(parentPath);
                 writer.Write(buffer);
                 writer.Write(new byte[(2048 - buffer.Length % 2048) % 2048]);
                 Data4.size[index] = buffer.Length;
-                path_index++;
             }
             else
             {
