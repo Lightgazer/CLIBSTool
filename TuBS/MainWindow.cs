@@ -258,7 +258,7 @@ public sealed partial class MainWindow
             Path.Combine ("14", "evm0050.ar"), Path.Combine ("14", "guidemsg.ar"),
             Path.Combine ("14", "helpmsg.ar"), Path.Combine ("14", "helpmsgb.ar"),
             Path.Combine ("14", "sysfont.ar"), Path.Combine ("14", "smenui.ar"),
-            Path.Combine ("14", "namene.ar")
+            Path.Combine ("14", "namene.ar"), Path.Combine ("14", "sysanim.ar"),
         }; //pack
         for (int index = 0; index < msg_parents.Length; index++)
         {
@@ -360,6 +360,19 @@ public sealed partial class MainWindow
             string screen = data_dir + file.Substring(0, file.Length - 4) + Path.DirectorySeparatorChar;
             ImageConv.PNGToTb(pic_dir + file, screen + "000.tp", screen + "000.tb");
             import_list.Add(screen + "000.tb");
+        }
+        {
+            var num = "14";
+            var folder = "sysanim.ar";
+            var picPath = Path.Combine(pic_dir, num, folder, "001.png");
+
+            if (File.Exists(picPath)) {
+                Console.WriteLine("Status: Converting image: " + picPath);
+                var tb = Path.Combine(data_dir, num, folder, "001.tb");
+                var tp = Path.Combine(data_dir, num, folder, "000.tp");
+                ImageConv.PNGToTb(picPath, tp, tb);
+                import_list.Add(tb);
+            }
         }
         SortImportFiles();
         tb_list.Clear();

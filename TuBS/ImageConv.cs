@@ -8,7 +8,24 @@ public class ImageConv
         int width = 512;
         int height = 448;
         PaletteBGRS palette = new PaletteBGRS(pal);
+        TbToPNG(image, width, height, palette, output);
+    }
 
+    public static void TbToPNG(string image, string pal, string info, string output)
+    {
+        using var reader = new BinaryReader((Stream)new FileStream(info, FileMode.Open));
+        int width = reader.ReadInt16();
+        int height = reader.ReadInt16();
+        PaletteS palette;
+        if (new FileInfo(pal).Length == 1024)
+            palette = new PaletteRGB8S(pal);
+        else
+            palette = new PaletteBGRS(pal);
+        TbToPNG(image, width, height, palette, output);
+    }
+
+    public static void TbToPNG(string image, int width, int height, PaletteS palette, string output)
+    {
         BinaryReader reader = new BinaryReader(File.OpenRead(image));
         Bitmap bmp = new Bitmap(width, height);
         for (int i = 0; i < bmp.Height; i++)
@@ -33,7 +50,11 @@ public class ImageConv
         else
             reader.Close();
 
-        PaletteBGRS palette = new PaletteBGRS(pal);
+        PaletteS palette;
+        if (new FileInfo(pal).Length == 1024)
+            palette = new PaletteRGB8S(pal);
+        else
+            palette = new PaletteBGRS(pal);
 
         Bitmap bmp = new Bitmap(image);
         BinaryWriter writer = new BinaryWriter((Stream)new FileStream(output, FileMode.Open));

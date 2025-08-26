@@ -68,6 +68,19 @@ public sealed partial class MainWindow
             Console.WriteLine($"Converting ttx to png: {tb} and {tp} to {outpath}");
             ImageConv.TbToPNG(tb, tp, outpath);
         }
+
+        {
+            var num = "14";
+            var folder = "sysanim.ar";
+            var tb = Path.Combine(out_dir, num, folder, "001.tb");
+            var tp = Path.Combine(out_dir, num, folder, "000.tp");
+            var ai = Path.Combine(out_dir, num, folder, "001.ai");
+
+            var outpath = Path.Combine(pic_dir, num, folder, "001.png");
+            Console.WriteLine($"Converting ttx to png: {tb} and {tp} to {outpath}");
+            Directory.CreateDirectory(Path.GetDirectoryName(outpath));
+            ImageConv.TbToPNG(tb, tp, ai, outpath);
+        }
     }
 
     List<string> import_list = new List<string>();

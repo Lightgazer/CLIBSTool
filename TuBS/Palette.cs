@@ -71,7 +71,13 @@ public class PaletteBGR //BGR555
     }
 }
 
-public class PaletteBGRS //BGR555 in Separate file
+public abstract class PaletteS
+{
+    public abstract Color GetColor(byte index);
+    public abstract byte GetIndex(Color color);
+}
+
+public class PaletteBGRS : PaletteS //BGR555 in Separate file
 {
     const int palette_size = 512;
     ushort[] paletteBGR = new ushort[palette_size / 2];
@@ -111,7 +117,7 @@ public class PaletteBGRS //BGR555 in Separate file
         return Color.FromArgb(a, r, g, b);
     }
 
-    public byte GetIndex(Color color)
+    public override byte GetIndex(Color color)
     {
         byte index = 0;
         int maxdev = 1024;
@@ -134,9 +140,84 @@ public class PaletteBGRS //BGR555 in Separate file
         return index;
     }
 
-    public Color GetColor(byte index)
+    public override Color GetColor(byte index)
     {
         return BGRToColor(paletteBGR[index]);
+    }
+}
+
+public class PaletteRGB8S : PaletteS
+{
+    const int palette_size = 1024;
+
+    int[] paletteA = new int[palette_size / 4];
+    int[] paletteR = new int[palette_size / 4];
+    int[] paletteG = new int[palette_size / 4];
+    int[] paletteB = new int[palette_size / 4];
+
+    public PaletteRGB8S(string file)
+    {
+        int alpha_mult = 2;
+        BinaryReader reader = new BinaryReader((Stream)new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read));
+        int[] raw_paletteA = new int[palette_size / 4];
+        int[] raw_paletteR = new int[palette_size / 4];
+        int[] raw_paletteG = new int[palette_size / 4];
+        int[] raw_paletteB = new int[palette_size / 4];
+        for (int i = 0; i < palette_size / 4; i++)
+        {
+            raw_paletteR[i] = reader.ReadByte();
+            raw_paletteG[i] = reader.ReadByte();
+            raw_paletteB[i] = reader.ReadByte();
+            raw_paletteA[i] = reader.ReadByte();
+            if (raw_paletteA[i] > 127)
+                alpha_mult = 1;
+        }
+        for (int i = 0; i < palette_size / 4; i++)
+            raw_paletteA[i] *= alpha_mult;
+        reader.Close();
+
+        int[] palette_order = new int[] {0, 2, 1, 3, 4, 6, 5, 7, 8, 10, 9, 11, 12, 14, 13, 15, 16, 18, 17,
+                19, 20, 22, 21, 23, 24, 26, 25, 27, 28, 30, 29, 31
+            }; // about pallete rearrange see: http://izumobridge.blog.fc2.com/blog-entry-103.html
+        for (int i = 0; i < palette_size / 4 / 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                paletteA[i * 8 + j] = raw_paletteA[8 * palette_order[i] + j];
+                paletteR[i * 8 + j] = raw_paletteR[8 * palette_order[i] + j];
+                paletteG[i * 8 + j] = raw_paletteG[8 * palette_order[i] + j];
+                paletteB[i * 8 + j] = raw_paletteB[8 * palette_order[i] + j];
+            }
+        }
+    }
+
+    public override byte GetIndex(Color color)
+    {
+        byte index = 0;
+        int maxdev = 1024;
+
+        for (int i = 0; i < palette_size / 4; i++)
+        {
+            int dev = Math.Abs(paletteA[i] - color.A) + Math.Abs(paletteR[i] - color.R) + Math.Abs(paletteG[i] - color.G) + Math.Abs(paletteG[i] - color.B);
+            if (paletteA[i] == 0 & color.A == 0)
+            {
+                index = (byte)i;
+                break;
+            }
+            if (maxdev > dev)
+            {
+                index = (byte)i;
+                maxdev = dev;
+            }
+            if (maxdev == 0)
+                break;
+        }
+        return index;
+    }
+
+    public override Color GetColor(byte index)
+    {
+        return Color.FromArgb(paletteA[index], paletteR[index], paletteG[index], paletteB[index]);
     }
 }
 
