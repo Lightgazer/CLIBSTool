@@ -83,7 +83,7 @@ public static class Program
             height: 20,
             width: 18,
             collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&".ToCharArray(),
+            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&=".ToCharArray(),
             kerningOffset: 0,
             specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
         );
@@ -91,7 +91,7 @@ public static class Program
         shadowSourceFont.TypeToTarget(
             "Pictures/14/commfont.ar/font0.ttx.png", 14, "commfont.ar",
             cellDelta: new(4, 5),
-            charsToType: "ÄäÖöÜüß„”&".ToCharArray(),
+            charsToType: "ÄäÖöÜüß„”&=".ToCharArray(),
             collumnsInTarget: 46,
             drawingOffsetY: 2
         //second: "Pictures/14/commfont.ar/font1.ttx.png"
@@ -250,6 +250,16 @@ public static class Program
             Console.WriteLine("" + Config.SlpsPath + " not found");
             Console.WriteLine($"Check {configFile}");
         }
+
+        Config.IsoType += "E"; 
+
+        //var list = Directory
+        //.EnumerateFiles("./Pictures", "*", SearchOption.AllDirectories)
+        //.Where(p => !p.Contains("font"))
+        //.Select(p => p.Replace("\\", "/").Replace("./", ""))
+        //.ToList();
+
+        //File.WriteAllLines("listFull.txt", list);
 
         var windowClass = new MainWindow();
         windowClass.OnSaveButtonClicked();

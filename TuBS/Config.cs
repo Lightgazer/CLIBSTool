@@ -33,6 +33,7 @@ public static class Config
         {
             return isoType;
         }
+        set => isoType = value;
     }
     public static long OffsetDATA3
     {
