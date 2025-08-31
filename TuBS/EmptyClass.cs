@@ -279,12 +279,18 @@ public sealed partial class MainWindow
                     else
                     {
                         compress_flag = 1;
-                        if (child.Contains("ttx") | child.Contains("tb")) //если сжимали изображение его нужно записать чтобы не сжимать повторно 
-                            File.WriteAllBytes(child, buffer);                                    //на сжатие изображений уходит много времени	 
+                        //если сжимали изображение его нужно записать чтобы не сжимать повторно
+                        if (!child.Contains("tbl") || child.Contains("ttx") || child.Contains("tb"))
+                        {
+                            //на сжатие изображений уходит много времени
+                            File.WriteAllBytes(child, buffer);
+                        }
                     }
                 }
                 else
+                {
                     buffer = File.ReadAllBytes(child);
+                }
                 writer.BaseStream.Position = (long)(16 + 12 * index);
                 writer.Write((int)writer.BaseStream.Length << 1 | compress_flag); //сдвинуть все биты размера влево, записать справа флаг
                 writer.Write(buffer.Length);
