@@ -70,6 +70,18 @@ namespace CLIBSTool
             isKerningFilled = true;
         }
 
+        public int CountPixelSizeForWord(string word)
+        {
+            var result = 0;
+            foreach (var ch in word)
+            {
+                var charIndex = Array.IndexOf(chars, ch);
+                result += kernings[charIndex];
+            }
+
+            return result;
+        }
+
         public void TypeToTarget(
             string targetPath, int data3Num, string arName, Point cellDelta = default, char[] charsToType = null, 
             int collumnsInTarget = 0, int drawingOffsetY = 0

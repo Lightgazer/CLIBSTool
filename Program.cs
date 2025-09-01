@@ -158,32 +158,14 @@ public static class Program
         middleWhiteSourceFont.TypeToTarget("Pictures/2284/font.ttx.png", 2284, "none", new(-4, -1), drawingOffsetY: -1);
         middleWhiteSourceFont.TypeToTarget("Pictures/2449/font.ttx.png", 2449, "none");
 
-        var comChars = CodePage.GetCodePage(-1, mode: "import");
-
-        var comrWhiteFont = new SourceFont(
-            path: "GerSourceFonts/14/comrfont.ar/font0.ttx.png",
-            height: 22,
-            width: 22,
-            collumns: 46,
-            chars: comChars,
-            kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, } 
-        );
+        var comrWhiteFont = SourceFontFactory.CreateComr();
         comrWhiteFont.TypeToTarget(
             "Pictures/14/comrfont.ar/font0.ttx.png", 14, "comrfont.ar",
             charsToType: "ÄäÖöÜüß„”&".ToCharArray()
             //second: "Pictures/14/comrfont.ar/font1.ttx.png"
         );
 
-        var comlWhiteFont = new SourceFont(
-            path: "GerSourceFonts/14/comlfont.ar/font0.ttx.png",
-            height: 26,
-            width: 20,
-            collumns: 51,
-            chars: comChars,
-            kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
-        );
+        var comlWhiteFont = SourceFontFactory.CreateComl();
         comlWhiteFont.TypeToTarget(
             "Pictures/14/comlfont.ar/font0.ttx.png", 14, "comlfont.ar",
             charsToType: "ÄäÖöÜüß„”".ToCharArray()
@@ -251,7 +233,10 @@ public static class Program
             Console.WriteLine($"Check {configFile}");
         }
 
-        Config.IsoType += "E"; 
+        Config.IsoType += "E";
+
+        WordListProgram.Do();
+        BinaryTextManager.Pack();
 
         //var list = Directory
         //.EnumerateFiles("./Pictures", "*", SearchOption.AllDirectories)
