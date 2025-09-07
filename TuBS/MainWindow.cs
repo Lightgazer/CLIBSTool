@@ -276,26 +276,26 @@ public sealed partial class MainWindow
 
         Console.WriteLine("Status: making script from .dat");
         string[] dats = new string[] {
-            Path.Combine ("3384", "e0003855.dat"),
-            Path.Combine ("3386", "e0003806.dat"), Path.Combine ("3389", "e0003758.dat"), Path.Combine ("3390", "e0003735.dat"),
-            Path.Combine ("3391", "e0003704.dat"), Path.Combine ("3393", "e0003673.dat"), Path.Combine ("3394", "e0003642.dat"),
-            Path.Combine ("3396", "e0003606.dat"), Path.Combine ("3397", "e0003592.dat"), Path.Combine ("3398", "e0003565.dat"),
-            Path.Combine ("3400", "e0003540.dat"), Path.Combine ("3401", "e0003511.dat"), Path.Combine ("3402", "e0003488.dat"),
-            Path.Combine ("3404", "e0003453.dat"), Path.Combine ("3405", "e0003427.dat"), Path.Combine ("3407", "e0003394.dat"),
-            Path.Combine ("3408", "e0003363.dat"), Path.Combine ("3410", "e0003327.dat"), Path.Combine ("3411", "e0003304.dat"),
-            Path.Combine ("3413", "e0003275.dat"), Path.Combine ("3414", "e0003249.dat"), Path.Combine ("3416", "e0003214.dat"),
-            Path.Combine ("3417", "e0003195.dat"), Path.Combine ("3420", "e0003137.dat"), Path.Combine ("3422", "e0003093.dat"),
-            Path.Combine ("3424", "e0003055.dat"), Path.Combine ("3426", "e0003003.dat"), Path.Combine ("3428", "e0002968.dat"),
-            Path.Combine ("3431", "e0002918.dat"), Path.Combine ("3434", "e0002860.dat"), Path.Combine ("3435", "e0002831.dat"),
-            Path.Combine ("3437", "e0002787.dat"), Path.Combine ("3439", "e0002753.dat"), Path.Combine ("3442", "e0002686.dat"),
-            Path.Combine ("3445", "e0002632.dat"), Path.Combine ("3446", "e0002601.dat"), Path.Combine ("3449", "e0002550.dat"),
-            Path.Combine ("3451", "e0002518.dat"), Path.Combine ("3453", "e0002467.dat"), Path.Combine ("3456", "e0002407.dat"),
-            Path.Combine ("3458", "e0002370.dat"), Path.Combine ("3458", "e0002376.dat"), Path.Combine ("3462", "e0002300.dat"),
-            Path.Combine ("3467", "e0002200.dat"), Path.Combine ("3469", "e0002150.dat"), Path.Combine ("3470", "e0002138.dat"),
-            Path.Combine ("3470", "e0002140.dat"), Path.Combine ("3471", "e0002118.dat"), Path.Combine ("3475", "e0002032.dat"),
-            Path.Combine ("3499", "e0001554.dat"), Path.Combine ("3504", "e0001444.dat"), Path.Combine ("3525", "e0001033.dat"),
-            Path.Combine ("3525", "e0001034.dat"), Path.Combine ("3525", "e0001035.dat"), Path.Combine ("3525", "e0001036.dat"),
-            Path.Combine ("3525", "e0001037.dat"), Path.Combine ("3525", "e0001038.dat"), Path.Combine ("3525", "e0001039.dat")
+            Path.Combine("3384", "e0003855.dat"),
+            Path.Combine("3386", "e0003806.dat"), Path.Combine ("3389", "e0003758.dat"), Path.Combine ("3390", "e0003735.dat"),
+            Path.Combine("3391", "e0003704.dat"), Path.Combine ("3393", "e0003673.dat"), Path.Combine ("3394", "e0003642.dat"),
+            Path.Combine("3396", "e0003606.dat"), Path.Combine ("3397", "e0003592.dat"), Path.Combine ("3398", "e0003565.dat"),
+            Path.Combine("3400", "e0003540.dat"), Path.Combine ("3401", "e0003511.dat"), Path.Combine ("3402", "e0003488.dat"),
+            Path.Combine("3404", "e0003453.dat"), Path.Combine ("3405", "e0003427.dat"), Path.Combine ("3407", "e0003394.dat"),
+            Path.Combine("3408", "e0003363.dat"), Path.Combine ("3410", "e0003327.dat"), Path.Combine ("3411", "e0003304.dat"),
+            Path.Combine("3413", "e0003275.dat"), Path.Combine ("3414", "e0003249.dat"), Path.Combine ("3416", "e0003214.dat"),
+            Path.Combine("3417", "e0003195.dat"), Path.Combine ("3420", "e0003137.dat"), Path.Combine ("3422", "e0003093.dat"),
+            Path.Combine("3424", "e0003055.dat"), Path.Combine ("3426", "e0003003.dat"), Path.Combine ("3428", "e0002968.dat"),
+            Path.Combine("3431", "e0002918.dat"), Path.Combine ("3434", "e0002860.dat"), Path.Combine ("3435", "e0002831.dat"),
+            Path.Combine("3437", "e0002787.dat"), Path.Combine ("3439", "e0002753.dat"), Path.Combine ("3442", "e0002686.dat"),
+            Path.Combine("3445", "e0002632.dat"), Path.Combine ("3446", "e0002601.dat"), Path.Combine ("3449", "e0002550.dat"),
+            Path.Combine("3451", "e0002518.dat"), Path.Combine ("3453", "e0002467.dat"), Path.Combine ("3456", "e0002407.dat"),
+            Path.Combine("3458", "e0002370.dat"), Path.Combine ("3458", "e0002376.dat"), Path.Combine ("3462", "e0002300.dat"),
+            Path.Combine("3467", "e0002200.dat"), Path.Combine ("3469", "e0002150.dat"), Path.Combine ("3470", "e0002138.dat"),
+            Path.Combine("3470", "e0002140.dat"), Path.Combine ("3471", "e0002118.dat"), Path.Combine ("3475", "e0002032.dat"),
+            Path.Combine("3499", "e0001554.dat"), Path.Combine ("3504", "e0001444.dat"), Path.Combine ("3525", "e0001033.dat"),
+            Path.Combine("3525", "e0001034.dat"), Path.Combine ("3525", "e0001035.dat"), Path.Combine ("3525", "e0001036.dat"),
+            Path.Combine("3525", "e0001037.dat"), Path.Combine ("3525", "e0001038.dat"), Path.Combine ("3525", "e0001039.dat")
         };
         foreach (string dat in dats)
         {
@@ -312,12 +312,14 @@ public sealed partial class MainWindow
             foreach (var file in backup_files)
             {
                 if (File.Exists(back_dir + file))
+                {
                     if (File.Exists(file))
                     {
                         File.Delete(file);
-                        File.Move(back_dir + file, file);
-                        Console.WriteLine("Backup: Restored " + file);
                     }
+                    File.Move(back_dir + file, file);
+                    Console.WriteLine("Backup: Restored " + file);
+                }
             }
             DeleteDirectory(back_dir);
         }

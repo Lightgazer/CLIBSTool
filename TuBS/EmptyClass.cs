@@ -280,7 +280,7 @@ public sealed partial class MainWindow
                     {
                         compress_flag = 1;
                         //если сжимали изображение его нужно записать чтобы не сжимать повторно
-                        if (!child.Contains("tbl") || child.Contains("ttx") || child.Contains("tb"))
+                        if (child.Contains("ttx") || (child.Contains("tb") && !child.Contains("tbl")))
                         {
                             //на сжатие изображений уходит много времени
                             File.WriteAllBytes(child, buffer);

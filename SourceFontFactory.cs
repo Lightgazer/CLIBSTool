@@ -20,13 +20,13 @@ public static class SourceFontFactory
         specialKerings: new Dictionary<char, int> { { '\u3000', 7 }, }
     );
 
-    public static SourceFont CreateComl() => new SourceFont(
+    public static SourceFont CreateComl(int kerningOffset = 0) => new SourceFont(
         path: "GerSourceFonts/14/comlfont.ar/font0.ttx.png",
         height: 26,
         width: 20,
         collumns: 51,
         chars: comChars,
-        kerningOffset: 0,
+        kerningOffset: kerningOffset,
         specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
     );
 }

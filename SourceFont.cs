@@ -55,6 +55,11 @@ namespace CLIBSTool
                         emptyCols.Add(x);
                     }
                 }
+                if (emptyCols.Count == 0)
+                {
+                    kernings[charIndex] = width;
+                    continue;
+                }
                 
                 for (int i = 0; i < emptyCols.Count; i++)
                 {
@@ -76,7 +81,7 @@ namespace CLIBSTool
             foreach (var ch in word)
             {
                 var charIndex = Array.IndexOf(chars, ch);
-                result += kernings[charIndex];
+                result += GetActualKerning(charIndex);
             }
 
             return result;
@@ -164,6 +169,18 @@ namespace CLIBSTool
             targetKerning[characterPosition] = (byte)GetActualKerning(sourceIndex);
         }
 
+        public Bitmap GetLetterBitmap(char requestedCharacter)
+        {
+            var sourceIndex = Array.IndexOf(chars, requestedCharacter);
+            return CropLetter(sourceIndex);
+        }
+
+        public int GetLetterKerning(char requestedCharacter)
+        {
+            var sourceIndex = Array.IndexOf(chars, requestedCharacter);
+            return GetActualKerning(sourceIndex);
+        }
+
         private Point GetCharPosition(int index)
         {
             if (index < 0 || index >= chars.Length) return Point.Empty;
@@ -200,6 +217,12 @@ namespace CLIBSTool
             if (!isKerningFilled)
             {
                 FillKerning();
+            }
+            var rows = bitmap.Height / height;
+            var charRow = letnum / columns;
+            if (charRow >= rows)
+            {
+                throw new Exception("to do second page in SourceFont");
             }
             return kernings[letnum] + kerningOffset;
         }

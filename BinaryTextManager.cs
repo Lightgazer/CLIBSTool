@@ -48,7 +48,8 @@ public static class BinaryTextManager
     private enum Encoding
     {
         Default,
-        Complex
+        Complex,
+        ComplexWithWordList
     }
 
     private static readonly List<PointerFile> SLPSPointerFiles = [
@@ -83,8 +84,8 @@ public static class BinaryTextManager
         new ("sale1", 3852032, 96, Encoding.Default),
         new ("file5", 3879168, 192, Encoding.Default),
         new ("captured", 3880416, 256, Encoding.Default),
-        new ("wpf1", 3847912, 2528, Encoding.Complex),
-        new ("wpf2", 3838424, 544, Encoding.Complex),
+        new ("wpf1", 3847912, 2528, Encoding.ComplexWithWordList),
+        new ("wpf2", 3838424, 544, Encoding.ComplexWithWordList),
         new ("typing", 3874368, 112, Encoding.Complex),
         new ("saveerr", 3869776, 40, Encoding.Default),
         new ("saveerr2", 3869840, 64, Encoding.Default),
@@ -338,6 +339,10 @@ public static class BinaryTextManager
             if (encoding == Encoding.Default)
             {
                 return CP932Helper.ToCP932(line, lineSize);
+            }
+            if (encoding == Encoding.ComplexWithWordList)
+            {
+                return CP932Helper.ToComplexEn(line, lineSize, WordListProgram.GetTokens);
             }
             if (encoding == Encoding.Complex)
             {

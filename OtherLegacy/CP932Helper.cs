@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using CLIBSTool;
+using System.Text;
 using System.Text.Json;
 
 public static class CP932Helper
@@ -178,56 +179,71 @@ public static class CP932Helper
 
     public static byte[] ToComplexEn(string str, int size)
     {
+        return ToComplexEn(str, size, str => str.Split("").ToList());
+    }
+
+    public static byte[] ToComplexEn(string str, int size, Func<string, List<string>> tokenizer)
+    {
         byte[] ret = new byte[size];
         bool spflag = false;
-        str = ReplaceGermanLetters(str);
 
         int i = 0;
-        for (int j = 0; j < str.Length; j++)
+        var tokens = tokenizer.Invoke(str);
+
+        foreach(var token in tokens)
         {
+            if (token.Length > 1)
+            {
+                var dogNumner = WordListProgram.GetTokenNumber(token);
+                AddByte(0x84);
+                AddByte((byte)(0x74 + dogNumner));
+                continue;
+            }
+            var chToken = ReplaceGermanLetters(token)[0];
+
             if (spflag == true)
             {
-                if (str[j] == '%')
+                if (chToken == '%')
                 {
                     AddByte(0x25);
                     continue;
                 }
-                if (str[j] == 'C')
+                if (chToken == 'C')
                     AddByte(0x43);
-                if (str[j] == 'D')
+                if (chToken == 'D')
                     AddByte(0x44);
-                if (str[j] == 'a')
+                if (chToken == 'a')
                     AddByte(0x61);
-                if (str[j] == 'd')
+                if (chToken == 'd')
                     AddByte(0x64);
-                if (str[j] == 'h')
+                if (chToken == 'h')
                     AddByte(0x68);
-                if (str[j] == 'i')
+                if (chToken == 'i')
                     AddByte(0x69);
-                if (str[j] == 'n')
+                if (chToken == 'n')
                     AddByte(0x6E);
-                if (str[j] == 's')
+                if (chToken == 's')
                     AddByte(0x73);
                 spflag = false;
                 continue;
             }
-            if (str[j] == '%')
+            if (chToken == '%')
             {
                 spflag = true;
                 AddByte(0x25);
                 continue;
             }
-            if (str[j] == ' ' | str[j] == '\u3000')
+            if (chToken == ' ' | chToken == '\u3000')
             {
                 AddByte(0x20);
                 continue;
             }
-            if (str[j] == '\n')
+            if (chToken == '\n')
             {
                 AddByte(0x0A);
                 continue;
             }
-            var cp932Char = CharToCP932(str[j]);
+            var cp932Char = CharToCP932(chToken);
             AddByte(cp932Char.Item1);
             AddByte(cp932Char.Item2);
         }
