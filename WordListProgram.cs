@@ -27,7 +27,8 @@ public static class WordListProgram
             width: 20,
             collumns: 51,
             pageRows: 39,
-            startPosition: 2478
+            startPosition: 2478,
+            fontCharSize: 2958
         );
         UpdateFontInfo("DATA3/14/comlfont.ar/fontinfo.dat", 2958);
 
@@ -43,7 +44,8 @@ public static class WordListProgram
             width: 22,
             collumns: 46,
             pageRows: 46,
-            startPosition: 2478
+            startPosition: 2478,
+            fontCharSize: 3104
         );
         sourceWordsOrdered = sourceWords.OrderBy(s => -s.Length).ToArray();
     }
@@ -96,7 +98,8 @@ public static class WordListProgram
         int width,
         int collumns,
         int pageRows,
-        int startPosition
+        int startPosition,
+        int fontCharSize
     )
     {
         var tempTargetPngPath = targetFontPath.Replace(".png", ".temp.png");
@@ -117,9 +120,14 @@ public static class WordListProgram
                 var sourceWord = s.Replace(' ', '\u3000');
                 var wordPixelSize = sourceFont.CountPixelSizeForWord(sourceWord);
                 wordPixelSize += sourceWord[^1] == '\u3000' ? 3 : 9;
+                if (wordPixelSize >= byte.MaxValue) throw new Exception("Word character is to long");
                 var wordCharSize = (int)Math.Ceiling((double)wordPixelSize / width);
                 var requestedRow = currentPosition / collumns;
                 var requestedCol = currentPosition % collumns;
+                if (requestedCol + wordCharSize > fontCharSize)
+                {
+                    throw new Exception("No space on font");
+                }
                 if (requestedCol + wordCharSize > collumns)
                 {
                     var erasePosition = new Point(requestedCol * width, requestedRow * height);
@@ -189,3 +197,7 @@ public static class WordListProgram
         File.WriteAllBytes(path, bytes.Take(size).ToArray());
     }
 }
+
+// coml first special symbol position = 2478
+// offset in sjis.tbl where first special symbol postion written = 1240
+// [0x84; 0x74]; - д

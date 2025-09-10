@@ -134,18 +134,35 @@ public class ImageConv
             reader.BaseStream.Position = 0x08;
         }
         int bpp = reader.ReadInt32();
-        reader.BaseStream.Position = 0x18;
+        reader.BaseStream.Position = 0x0C;
+        int image_size = reader.ReadInt32();
+        int image_width = reader.ReadInt32();
+        int image_height = reader.ReadInt32();
         int palette_type = reader.ReadInt32();
         int palette_size = reader.ReadInt32();
         reader.Close();
 
+
         Console.WriteLine($"Converting PNG to TTX from {input} to {output}");
         Bitmap bmp = new Bitmap(input);
+        if (image_width != bmp.Width || image_height != bmp.Height)
+        {
+
+        }
+        var s = bpp == 0x14 ? bmp.Width * bmp.Height / 2 : bmp.Width * bmp.Height;
+        if (s != image_size)
+        {
+
+        }
         // 4bpp. Fonts. Without pallete rearrange. RGBA palette
         if (bpp == 0x14)
         {
             PaletteRGBA4 palette = new PaletteRGBA4(output);
             BinaryWriter writer = new BinaryWriter(new FileStream(output, FileMode.Open));
+            writer.BaseStream.Position = 0x0C;
+            writer.Write(bmp.Width * bmp.Height / 2);
+            writer.Write(bmp.Width);
+            writer.Write(bmp.Height);
             writer.BaseStream.Position = 32 + palette_size;
             for (int i = 0; i < bmp.Height; i++)
                 for (int j = 0; j < bmp.Width; j++)
