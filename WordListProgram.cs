@@ -28,7 +28,8 @@ public static class WordListProgram
             collumns: 51,
             pageRows: 39,
             startPosition: 2478,
-            fontCharSize: 2958
+            fontCharSize: 2958,
+            addSpace: false
         );
         UpdateFontInfo("DATA3/14/comlfont.ar/fontinfo.dat", 2958);
 
@@ -45,7 +46,8 @@ public static class WordListProgram
             collumns: 46,
             pageRows: 46,
             startPosition: 2478,
-            fontCharSize: 3104
+            fontCharSize: 3104,
+            addSpace: true
         );
         sourceWordsOrdered = sourceWords.OrderBy(s => -s.Length).ToArray();
     }
@@ -99,10 +101,12 @@ public static class WordListProgram
         int collumns,
         int pageRows,
         int startPosition,
-        int fontCharSize
+        int fontCharSize,
+        bool addSpace
     )
     {
         var tempTargetPngPath = targetFontPath.Replace(".png", ".temp.png");
+        var spaceKerning = sourceFont.GetLetterKerning('\u3000');
         {
             var startPositionOnSecondPage = startPosition - collumns * pageRows;
             var currentPosition = startPositionOnSecondPage;
@@ -119,7 +123,15 @@ public static class WordListProgram
             {
                 var sourceWord = s.Replace(' ', '\u3000');
                 var wordPixelSize = sourceFont.CountPixelSizeForWord(sourceWord);
-                wordPixelSize += sourceWord[^1] == '\u3000' ? 3 : 9;
+                if (addSpace)
+                {
+                    wordPixelSize += sourceWord[^1] == '\u3000' ? 13 - spaceKerning : 13;
+                } 
+                else
+                {
+                    var lastChar = sourceWord[^1];
+                    wordPixelSize += lastChar == '!' || lastChar == '.' ? 2 : 0;
+                }
                 if (wordPixelSize >= byte.MaxValue) throw new Exception("Word character is to long");
                 var wordCharSize = (int)Math.Ceiling((double)wordPixelSize / width);
                 var requestedRow = currentPosition / collumns;

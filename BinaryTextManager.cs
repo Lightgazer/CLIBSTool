@@ -255,6 +255,10 @@ public static class BinaryTextManager
         WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSOffsetFiles);
         WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSPointerFiles);
         WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, FifteenOffsetFiles);
+        if (CP932Helper.HasErrors)
+        {
+            throw new Exception("Please fix errors in BinaryTexts");
+        }
     }
 
     private static void WriteBinarySource(string targetPath, string sourceDirectory, List<OffsetFile> listFiles)

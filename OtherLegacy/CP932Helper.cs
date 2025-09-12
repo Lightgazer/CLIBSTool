@@ -13,6 +13,7 @@ public static class CP932Helper
     private static readonly char[] german_replacement = "西我々眠見捨地人間".ToCharArray();
 
     private static readonly Encoding encoding;
+    public static bool HasErrors;
 
     static CP932Helper()
     {
@@ -257,6 +258,8 @@ public static class CP932Helper
                 ret[^2] = 0x00;
             }
             ret[^1] = 0x00;
+
+            HasErrors = true;
         }
 
         return ret;
