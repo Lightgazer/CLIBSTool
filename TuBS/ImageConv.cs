@@ -145,15 +145,6 @@ public class ImageConv
 
         Console.WriteLine($"Converting PNG to TTX from {input} to {output}");
         Bitmap bmp = new Bitmap(input);
-        if (image_width != bmp.Width || image_height != bmp.Height)
-        {
-
-        }
-        var s = bpp == 0x14 ? bmp.Width * bmp.Height / 2 : bmp.Width * bmp.Height;
-        if (s != image_size)
-        {
-
-        }
         // 4bpp. Fonts. Without pallete rearrange. RGBA palette
         if (bpp == 0x14)
         {
