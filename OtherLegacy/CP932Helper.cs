@@ -180,7 +180,7 @@ public static class CP932Helper
 
     public static byte[] ToComplexEn(string str, int size)
     {
-        return ToComplexEn(str, size, str => str.Split("").ToList());
+        return ToComplexEn(str, size, str => str.ToCharArray().Select(c => c.ToString()).ToList());
     }
 
     public static byte[] ToComplexEn(string str, int size, Func<string, List<string>> tokenizer)
