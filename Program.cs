@@ -93,7 +93,7 @@ public static class Program
             cellDelta: new(4, 5),
             charsToType: "ÄäÖöÜüß„”&=".ToCharArray(),
             collumnsInTarget: 46,
-            drawingOffsetY: 2
+            drawingOffsetY: 3
         //second: "Pictures/14/commfont.ar/font1.ttx.png"
         );
         shadowSourceFont.TypeToTarget("Pictures/14/sysfont.ar/font.ttx.png", 14, "sysfont.ar");
