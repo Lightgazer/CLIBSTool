@@ -137,7 +137,7 @@ public static class Program
             specialKerings: new Dictionary<char, int> { { '\u3000', 14 } }
         );
         fatWhiteSourceFont.TypeToTarget("Pictures/2256/font.ttx.png", 2256, "none");
-        fatWhiteSourceFont.TypeToTarget("Pictures/2462/font.ttx.png", 2462, "none");
+        fatWhiteSourceFont.TypeToTarget("Pictures/2462/font.ttx.png", 2462, "none", cellDelta: new(-4, -4));
 
         var middleWhiteSourceFont = new SourceFont(
             path: "GerSourceFonts/2261/font.ttx.png",
