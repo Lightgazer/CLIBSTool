@@ -5,14 +5,16 @@ namespace CLIBSTool;
 
 public static class WordListProgram
 {
-    private static string[] sourceWords;
+    private static SourceWord[] sourceWordsWithTags;
+    private static string[] sourceWord;
     private static string[] sourceWordsOrdered;
 
     public static void Do()
     {
-        sourceWords = File
+        sourceWordsWithTags = File
             .ReadAllLines("BinaryTexts/wpfSpecialWords.txt")
             .Distinct()
+            .Select(str => new SourceWord(str))
             .ToArray();
 
         ExpandAndClearKerningFile("DATA3/14/comlfont.ar/kerning.dat", 2478, 2958, 20);
@@ -21,7 +23,7 @@ public static class WordListProgram
             "Pictures/14/comlfont.ar/font1.ttx.png",
             "DATA3/14/comlfont.ar/sjis.tbl",
             "DATA3/14/comlfont.ar/kerning.dat",
-            sourceWords,
+            sourceWordsWithTags,
             comlSourceFont,
             height: 26,
             width: 20,
@@ -29,7 +31,8 @@ public static class WordListProgram
             pageRows: 39,
             startPosition: 2478,
             fontCharSize: 2958,
-            addSpace: false
+            addSpace: false,
+            tag: "coml"
         );
         UpdateFontInfo("DATA3/14/comlfont.ar/fontinfo.dat", 2958);
 
@@ -39,7 +42,7 @@ public static class WordListProgram
             "Pictures/14/comrfont.ar/font1.ttx.png",
             "DATA3/14/comrfont.ar/sjis.tbl",
             "DATA3/14/comrfont.ar/kerning.dat",
-            sourceWords,
+            sourceWordsWithTags,
             comrSourceFont,
             height: 22,
             width: 22,
@@ -47,14 +50,16 @@ public static class WordListProgram
             pageRows: 46,
             startPosition: 2478,
             fontCharSize: 3104,
-            addSpace: true
+            addSpace: true,
+            tag: "comr"
         );
-        sourceWordsOrdered = sourceWords.OrderBy(s => -s.Length).ToArray();
+        sourceWord = sourceWordsWithTags.Select(source => source.Word).ToArray();
+        sourceWordsOrdered = sourceWord.OrderBy(s => -s.Length).ToArray();
     }
 
     public static int GetTokenNumber(string word)
     {
-        return Array.IndexOf(sourceWords, word) + 1;
+        return Array.IndexOf(sourceWord, word) + 1;
     }
 
     public static List<string> GetTokens(string str)
@@ -94,7 +99,7 @@ public static class WordListProgram
         string targetFontPath,
         string targetTblPath,
         string targetKerningPath,
-        string[] sourceWords,
+        SourceWord[] sourceWords,
         SourceFont sourceFont,
         int height,
         int width,
@@ -102,7 +107,8 @@ public static class WordListProgram
         int pageRows,
         int startPosition,
         int fontCharSize,
-        bool addSpace
+        bool addSpace,
+        string tag
     )
     {
         var tempTargetPngPath = targetFontPath.Replace(".png", ".temp.png");
@@ -121,17 +127,14 @@ public static class WordListProgram
 
             foreach (var s in sourceWords)
             {
-                var sourceWord = s.Replace(' ', '\u3000');
-                var wordPixelSize = sourceFont.CountPixelSizeForWord(sourceWord);
-                if (addSpace)
+                if (s.Tag != null && s.Tag != tag)
                 {
-                    wordPixelSize += sourceWord[^1] == '\u3000' ? 13 - spaceKerning : 13;
-                } 
-                else
-                {
-                    var lastChar = sourceWord[^1];
-                    wordPixelSize += lastChar == '!' || lastChar == '.' ? 2 : 0;
+                    tblWriter.Write((short)0);
+                    continue;
                 }
+
+                var sourceWord = s.Word.Replace(' ', '\u3000');
+                var wordPixelSize = s.Size > 0 ? s.Size : GetPixelSizeForWord(sourceWord);
                 if (wordPixelSize >= byte.MaxValue) throw new Exception("Word character is to long");
                 var wordCharSize = (int)Math.Ceiling((double)wordPixelSize / width);
                 var requestedRow = currentPosition / collumns;
@@ -191,6 +194,24 @@ public static class WordListProgram
             targetGraphics.Clear(Color.Transparent);
             targetGraphics.ResetClip();
         }
+
+        int GetPixelSizeForWord(string sourceWord)
+        {
+            var wordPixelSize = sourceFont.CountPixelSizeForWord(sourceWord);
+            if (wordPixelSize > width)
+            {
+                if (addSpace)
+                {
+                    wordPixelSize += sourceWord[^1] == '\u3000' ? 13 - spaceKerning : 13;
+                }
+                else
+                {
+                    var lastChar = sourceWord[^1];
+                    wordPixelSize += lastChar == '!' || lastChar == '.' ? 2 : 0;
+                }
+            }
+            return wordPixelSize;
+        }
     }
 
     private static void UpdateFontInfo(string path, int charNumber)
@@ -207,6 +228,33 @@ public static class WordListProgram
         if (bytes.Length <= clearForm) throw new Exception("kerning.dat is to small. Already compressed?");
         for (int i = clearForm; i < size; i++) bytes[i] = defaultValue;
         File.WriteAllBytes(path, bytes.Take(size).ToArray());
+    }
+}
+
+public class SourceWord
+{
+    public string Word;
+    public string Tag;
+    public int Size;
+
+    public SourceWord(string content)
+    {
+        var sp = content.Split("|");
+        if (sp.Length == 1)
+        {
+            Word = content;
+        }
+        else if (sp.Length == 2)
+        {
+            Tag = sp[0];
+            Word = sp[1];
+        }
+        else if (sp.Length == 3)
+        {
+            Tag = sp[0];
+            Size = int.Parse(sp[1]);
+            Word = sp[2];
+        }
     }
 }
 
