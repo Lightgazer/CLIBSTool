@@ -265,7 +265,7 @@ public static class BinaryTextManager
     {
         if (File.Exists(targetPath))
         {
-            Console.WriteLine($"Start writing scripts to {targetPath}");
+            Console.WriteLine($"Start writing offset scripts to {targetPath}");
 
             var backup = targetPath + "Backup";
             if (!File.Exists(backup))
@@ -360,7 +360,7 @@ public static class BinaryTextManager
     {
         if (File.Exists(targetPath))
         {
-            Console.WriteLine($"Start writing scripts to {targetPath}");
+            Console.WriteLine($"Start writing pointer scripts to {targetPath}");
 
             var backup = targetPath + "Backup";
             if (!File.Exists(backup))
