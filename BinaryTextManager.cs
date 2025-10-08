@@ -63,7 +63,12 @@ public static class BinaryTextManager
         new(3856176, 3888),
         new(3511476, 1274),
         new(3260244, 1020),
-        new(3272620, 6000)
+        new(3250996, 3000)
+
+        //new(3482528, 464),
+        //new(3786692, 672),
+
+        //new(3272620, 6000)
     ];
 
     private static readonly List<OffsetFile> SLPSOffsetFiles = [
