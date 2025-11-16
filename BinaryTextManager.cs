@@ -97,9 +97,9 @@ public static class BinaryTextManager
         new ("prep", 3867824, 768, Encoding.Default),
         new ("limit", 3867648, 112, Encoding.Default),
         new ("file4", 3876336, 112, Encoding.Default),
-        // new ("file4copy", 3874144, 112),
         new ("sysfile", 3864544, 120, Encoding.Default),
 
+        // new ("file4copy", 3874144, 112),
         // this does not translated in English version
         //new ("title", 3805024, 16),
         //new ("mode", 3830176, 80),
@@ -111,7 +111,8 @@ public static class BinaryTextManager
         new ("playtime", 247872, 16, Encoding.Default),
         new ("hms", 247896, 32, Encoding.Default),
         new ("fame", 247936, 24, Encoding.Default),
-        new ("survived", 248032, 176, Encoding.Default)
+        new ("survived", 248032, 176, Encoding.Default),
+        new ("chapter", 248432, 8, Encoding.Complex),
     ];
 
     private const string ZeroPointer = $"[Zero Pointer]";
