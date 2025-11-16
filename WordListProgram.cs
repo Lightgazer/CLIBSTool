@@ -134,7 +134,7 @@ public static class WordListProgram
                 }
 
                 var sourceWord = s.Word.Replace(' ', '\u3000');
-                var wordPixelSize = s.Size > 0 ? s.Size : GetPixelSizeForWord(sourceWord);
+                var wordPixelSize = s.Size.TryGetValue(tag, out var size) ? size : GetPixelSizeForWord(sourceWord);
                 if (wordPixelSize >= byte.MaxValue) throw new Exception("Word character is to long");
                 var wordCharSize = (int)Math.Ceiling((double)wordPixelSize / width);
                 var requestedRow = currentPosition / collumns;
@@ -235,7 +235,7 @@ public class SourceWord
 {
     public string Word;
     public string Tag;
-    public int Size;
+    public Dictionary<string, int> Size = [];
 
     public SourceWord(string content)
     {
@@ -244,16 +244,44 @@ public class SourceWord
         {
             Word = content;
         }
-        else if (sp.Length == 2)
+        else 
         {
-            Tag = sp[0];
-            Word = sp[1];
+            for (int i = 0; i < sp.Length; i++)
+            {
+                if (i + 1 == sp.Length)
+                {
+                    Word = sp[i];
+                    break;
+                }
+
+                var currentParam = sp[i];
+                var currentParamArr = currentParam.Split(":");
+                if (currentParamArr.Length != 2) throw new Exception("Wrong params");
+                var paramName = currentParamArr[0];
+                var paramValue = currentParamArr[1];
+
+                switch (paramName)
+                {
+                    case "tag":
+                        Tag = paramValue;
+                        break;
+                    case "size":
+                        SetSize(paramValue);
+                        break;
+                }
+
+            }
         }
-        else if (sp.Length == 3)
+    }
+
+    void SetSize(string param)
+    {
+        var arrayParam = param.Split(",");
+        foreach (var item in arrayParam)
         {
-            Tag = sp[0];
-            Size = int.Parse(sp[1]);
-            Word = sp[2];
+            var pair = item.Split("=");
+            if (pair.Length != 2) throw new Exception("Wrong params");
+            Size[pair[0]] = int.Parse(pair[1]);
         }
     }
 }
