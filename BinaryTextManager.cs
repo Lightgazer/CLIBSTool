@@ -108,11 +108,11 @@ public static class BinaryTextManager
     ];
 
     private static readonly List<OffsetFile> FifteenOffsetFiles = [
-        new ("playtime", 247872, 16, Encoding.Default),
-        new ("hms", 247896, 32, Encoding.Default),
-        new ("fame", 247936, 24, Encoding.Default),
-        new ("survived", 248032, 176, Encoding.Default),
-        new ("chapter", 248432, 8, Encoding.Complex),
+        new ("playtime", 247872, 16, Encoding.ComplexWithWordList),
+        new ("hms", 247896, 32, Encoding.ComplexWithWordList),
+        new ("fame", 247936, 24, Encoding.ComplexWithWordList),
+        new ("survived", 248032, 176, Encoding.ComplexWithWordList),
+        new ("chapter", 248432, 8, Encoding.ComplexWithWordList),
     ];
 
     private const string ZeroPointer = $"[Zero Pointer]";
@@ -258,8 +258,10 @@ public static class BinaryTextManager
 
     public static void Pack()
     {
+        WordListProgram.Current = WordListProgram.DefaultWordList;
         WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSOffsetFiles);
         WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSPointerFiles);
+        WordListProgram.Current = WordListProgram.FifteenWordList;
         WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, FifteenOffsetFiles);
         if (CP932Helper.HasErrors)
         {
@@ -352,7 +354,7 @@ public static class BinaryTextManager
             }
             if (encoding == Encoding.ComplexWithWordList)
             {
-                return CP932Helper.ToComplexEn(line, lineSize, WordListProgram.GetTokens);
+                return CP932Helper.ToComplexEn(line, lineSize, WordListProgram.Current.GetTokens);
             }
             if (encoding == Encoding.Complex)
             {

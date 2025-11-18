@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CLIBSTool;
+﻿namespace CLIBSTool;
 
 public static class SourceFontFactory
 {
@@ -27,6 +21,16 @@ public static class SourceFontFactory
         collumns: 51,
         chars: comChars,
         kerningOffset: kerningOffset,
+        specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
+    );
+
+    public static SourceFont CreateHelpMsg() =>  new SourceFont(
+        path: "GerSourceFonts/14/helpmsg.ar/font.ttx.png",
+        height: 20,
+        width: 18,
+        collumns: 32,
+        chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&=".ToCharArray(),
+        kerningOffset: 0,
         specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
     );
 }

@@ -78,15 +78,7 @@ public static class Program
         );
         verySmallWhiteSourceFont.TypeToTarget("Pictures/13/townarea.ar/font.ttx.png", 13, "townarea.ar");
 
-        var shadowSourceFont = new SourceFont(
-            path: "GerSourceFonts/14/helpmsg.ar/font.ttx.png",
-            height: 20,
-            width: 18,
-            collumns: 32,
-            chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&=".ToCharArray(),
-            kerningOffset: 0,
-            specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
-        );
+        var shadowSourceFont = SourceFontFactory.CreateHelpMsg();
         shadowSourceFont.TypeToTarget("Pictures/14/helpmsg.ar/font.ttx.png", 14, "helpmsg.ar");
         shadowSourceFont.TypeToTarget(
             "Pictures/14/commfont.ar/font0.ttx.png", 14, "commfont.ar",
@@ -235,7 +227,8 @@ public static class Program
 
         Config.IsoType += "E";
 
-        WordListProgram.Do();
+        WordListProgram.CreateDefaultList();
+        WordListProgram.CreateFifteenList();
         BinaryTextManager.Pack();
 
         //var list = Directory

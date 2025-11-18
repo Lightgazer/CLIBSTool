@@ -3,15 +3,19 @@ using System.Drawing;
 
 namespace CLIBSTool;
 
-public static class WordListProgram
+public sealed class WordListProgram
 {
-    private static SourceWord[] sourceWordsWithTags;
-    private static string[] sourceWord;
-    private static string[] sourceWordsOrdered;
+    public static WordListProgram Current;
+    public static WordListProgram DefaultWordList;
+    public static WordListProgram FifteenWordList;
 
-    public static void Do()
+    private SourceWord[] sourceWordsWithTags;
+    private string[] sourceWord;
+    private string[] sourceWordsOrdered;
+
+    public static void CreateDefaultList()
     {
-        sourceWordsWithTags = File
+        var sourceWordsWithTags = File
             .ReadAllLines("BinaryTexts/wpfSpecialWords.txt")
             .Distinct()
             .Select(str => new SourceWord(str))
@@ -53,16 +57,52 @@ public static class WordListProgram
             addSpace: true,
             tag: "comr"
         );
-        sourceWord = sourceWordsWithTags.Select(source => source.Word).ToArray();
-        sourceWordsOrdered = sourceWord.OrderBy(s => -s.Length).ToArray();
+        DefaultWordList = new WordListProgram();
+        DefaultWordList.sourceWordsWithTags = sourceWordsWithTags;
+        DefaultWordList.sourceWord = sourceWordsWithTags.Select(source => source.Word).ToArray();
+        DefaultWordList.sourceWordsOrdered = DefaultWordList.sourceWord.OrderBy(s => -s.Length).ToArray();
     }
 
-    public static int GetTokenNumber(string word)
+    public static void CreateFifteenList()
+    {
+        var sourceWordsWithTags = File
+            .ReadAllLines("BinaryTexts/15WordList.txt")
+            .Distinct()
+            .Select(str => new SourceWord(str))
+            .ToArray();
+
+        ExpandAndClearKerningFile("DATA3/14/commfont.ar/kerning.dat", 2478, 2720, 18);
+        var helpMsgSourceFont = SourceFontFactory.CreateHelpMsg();
+        InitWordList(
+            "Pictures/14/commfont.ar/font1.ttx.png",
+            "DATA3/14/commfont.ar/sjis.tbl",
+            "DATA3/14/commfont.ar/kerning.dat",
+            sourceWordsWithTags,
+            helpMsgSourceFont,
+            height: 25,
+            width: 22,
+            collumns: 46,
+            pageRows: 40,
+            startPosition: 2478,
+            fontCharSize: 2720,
+            addSpace: false,
+            tag: "comm",
+            drawingOffsetY: 3
+        );
+        UpdateFontInfo("DATA3/14/commfont.ar/fontinfo.dat", 2720);
+
+        FifteenWordList = new WordListProgram();
+        FifteenWordList.sourceWordsWithTags = sourceWordsWithTags;
+        FifteenWordList.sourceWord = sourceWordsWithTags.Select(source => source.Word).ToArray();
+        FifteenWordList.sourceWordsOrdered = FifteenWordList.sourceWord.OrderBy(s => -s.Length).ToArray();
+    }
+
+    public int GetTokenNumber(string word)
     {
         return Array.IndexOf(sourceWord, word) + 1;
     }
 
-    public static List<string> GetTokens(string str)
+    public List<string> GetTokens(string str)
     {
         var strSpan = str.AsSpan();
         var result = new List<string>();
@@ -108,7 +148,8 @@ public static class WordListProgram
         int startPosition,
         int fontCharSize,
         bool addSpace,
-        string tag
+        string tag,
+        int drawingOffsetY = 0
     )
     {
         var tempTargetPngPath = targetFontPath.Replace(".png", ".temp.png");
@@ -174,7 +215,7 @@ public static class WordListProgram
                 {
                     using var letterBitmap = sourceFont.GetLetterBitmap(ch);
                     var letterSize = sourceFont.GetLetterKerning(ch);
-                    var requestedPosition = new Point(requestedCol * width + pixelOffset, requestedRow * height);
+                    var requestedPosition = new Point(requestedCol * width + pixelOffset, requestedRow * height + drawingOffsetY);
                     targetGraphics.DrawImage(letterBitmap, requestedPosition);
                     pixelOffset += letterSize;
                 }
@@ -224,8 +265,10 @@ public static class WordListProgram
 
     private static void ExpandAndClearKerningFile(string path, int clearForm, int size, byte defaultValue)
     {
-        var bytes = File.ReadAllBytes(path);
-        if (bytes.Length <= clearForm) throw new Exception("kerning.dat is to small. Already compressed?");
+        var bytes = new byte[size];
+        var readBytes = File.ReadAllBytes(path);
+        if (readBytes.Length <= clearForm) throw new Exception("kerning.dat is to small. Already compressed?");
+        for (int i = 0; i < clearForm; i++) bytes[i] = readBytes[i]; 
         for (int i = clearForm; i < size; i++) bytes[i] = defaultValue;
         File.WriteAllBytes(path, bytes.Take(size).ToArray());
     }
