@@ -243,7 +243,12 @@ public sealed class WordListProgram
             {
                 if (addSpace)
                 {
-                    wordPixelSize += sourceWord[^1] == '\u3000' ? 13 - spaceKerning : 13;
+                    var emptySize = 13;
+                    if (wordPixelSize < 59)
+                    {
+                        emptySize = 7;
+                    }
+                    wordPixelSize += sourceWord[^1] == '\u3000' ? emptySize - spaceKerning : emptySize;
                 }
                 else
                 {
