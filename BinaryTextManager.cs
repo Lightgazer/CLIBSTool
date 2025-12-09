@@ -98,8 +98,7 @@ public static class BinaryTextManager
         new ("limit", 3867648, 112, Encoding.Default),
         new ("file4", 3876336, 112, Encoding.Default),
         new ("sysfile", 3864544, 120, Encoding.Default),
-
-        // new ("file4copy", 3874144, 112),
+        new ("file4copy", 3874144, 112, Encoding.Default),
         // this does not translated in English version
         //new ("title", 3805024, 16),
         //new ("mode", 3830176, 80),
