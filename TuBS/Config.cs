@@ -4,58 +4,20 @@ public static class Config
 {
     private static string input_iso;
     private static string output_iso;
-    private static string slps;
     private static string isoType;
-    public static string InputIsoPath
-    {
-        get
-        {
-            return input_iso;
-        }
-    }
-    public static string OutputIsoPath
-    {
-        get
-        {
-            return output_iso;
-        }
-    }
-    public static string SlpsPath
-    {
-        get
-        {
-            return slps;
-        }
-    }
+    public static string InputIsoPath => input_iso;
+    public static string OutputIsoPath => output_iso;
+    public static string SlpsPath => "SLPS_254.97";
     public static string IsoType
     {
-        get
-        {
-            return isoType;
-        }
+        get => isoType;
         set => isoType = value;
     }
-    public static long OffsetDATA3
-    {
-        get
-        {
-            return 3221794816;
-        }
-    }
-    public static long OffsetDATA4
-    {
-        get
-        {
-            return 4295536640;
-        }
-    }
-    public static long OffsetSLPS
-    {
-        get
-        {
-            return 4296202240;
-        }
-    }
+    public static long OffsetDATA3 => 3221794816;
+    public static long OffsetDATA4 => 4295536640;
+    public static long OffsetSLPS => 4296202240;
+
+    public static int SizeSLPS => 4620532;
 
     public static string SourceSLPS => "BinaryTexts/Source/SLPS_254.97";
     public static string SourceFifteen => "BinaryTexts/Source/15";
@@ -76,8 +38,6 @@ public static class Config
                 input_iso = conf[1];
             else if (conf[0] == "Output Iso")
                 output_iso = conf[1];
-            else if (conf[0] == "ELF")
-                slps = conf[1];
             else if (conf[0] == "Iso Type")
                 isoType = conf[1];
         }

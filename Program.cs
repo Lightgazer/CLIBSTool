@@ -1,4 +1,4 @@
-﻿using CLIBSTool;
+using CLIBSTool;
 
 public static class Program
 {
@@ -213,6 +213,8 @@ public static class Program
             return;
         }
 
+        if (!File.Exists(Config.SlpsPath)) SlpsExtractor.Extract();
+
         var windowClass = new MainWindow();
         windowClass.OnUnpackButtonClicked();
     }
@@ -222,7 +224,7 @@ public static class Program
         if (!File.Exists(Config.SlpsPath))
         {
             Console.WriteLine("" + Config.SlpsPath + " not found");
-            Console.WriteLine($"Check {configFile}");
+            return;
         }
 
         Config.IsoType += "E";
