@@ -23,6 +23,11 @@
       "commandName": "Project",
       "commandLineArgs": "UnpackBinaryTexts",
       "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+    },
+    "PackAll": {
+      "commandName": "Project",
+      "commandLineArgs": "Pack All",
+      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
     }
   }
 }

@@ -98,7 +98,7 @@ public partial class MainWindow
     {
         List<string> out_list = new List<string>();
         if (!CheckSq(script_file))
-            return out_list;
+            throw new InvalidDataException($"Invalid square markers in Script{Path.DirectorySeparatorChar}{script_file}");
 
         //lets find the parent and encoding
         string parent;

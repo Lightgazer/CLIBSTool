@@ -1,51 +1,13 @@
-﻿using CLIBSTool;
+using CLIBSTool;
 using System.Text;
 using System.Text.RegularExpressions;
 
 public sealed partial class MainWindow
 {
-    public MainWindow()
-    {
-        TuBSInit();
-    }
-
-    private void TuBSInit()
-    {
-        // path separator linux or windows
-        if ('/' != Path.DirectorySeparatorChar)
-        {
-            foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "list*.txt", SearchOption.TopDirectoryOnly))
-            {
-                string list = File.ReadAllText(file);
-                list = list.Replace('/', Path.DirectorySeparatorChar);
-                File.WriteAllText(file, list);
-            }
-            if (File.Exists("protect.txt"))
-            {
-                string protect = File.ReadAllText("protect.txt");
-                protect = protect.Replace('/', Path.DirectorySeparatorChar);
-                File.WriteAllText("protect.txt", protect);
-            }
-        }
-        else
-        {
-            foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "list*.txt", SearchOption.TopDirectoryOnly))
-            {
-                string list = File.ReadAllText(file);
-                list = list.Replace('\\', Path.DirectorySeparatorChar);
-                File.WriteAllText(file, list);
-            }
-        }
-
-        foreach (string list in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "list*.txt", SearchOption.TopDirectoryOnly))
-            ReadImportList(list);
-        PrintImportFiles();
-    }
-
     protected void UnpackTARC(string file, string child_dir, string out_dir)
     {
         BinaryWriter writer;
-        BinaryReader reader = new BinaryReader(File.OpenRead(file));
+        using BinaryReader reader = new BinaryReader(File.OpenRead(file));
         if (1129464148 != reader.ReadInt32()) //check TARC or not
             return;
         int num_of_files = reader.ReadInt32();
@@ -83,11 +45,23 @@ public sealed partial class MainWindow
             Directory.CreateDirectory(child_dir + filename);
             foreach (string tarc in child_tarc_files)
             {
-                string[] tarcname = tarc.Split(Path.DirectorySeparatorChar);
-                string new_path = child_dir + filename + Path.DirectorySeparatorChar + tarcname[2];
+                string new_path = Path.Combine(child_dir, filename, Path.GetFileName(tarc));
                 File.Move(tarc, new_path);
             }
         }
+    }
+
+    // DATA3 contains loose resources such as 15 and 2916; archives normally live in p/c/lDATA3.
+    private static string ResolveDataPath(string relativePath)
+    {
+        foreach (var folder in new[] { "DATA3", "pDATA3", "cDATA3", "lDATA3" })
+        {
+            var path = Path.Combine(folder, relativePath);
+            if (File.Exists(path))
+                return path;
+        }
+        var depth = relativePath.Split(Path.DirectorySeparatorChar).Length;
+        return Path.Combine(depth == 1 ? "pDATA3" : depth == 2 ? "cDATA3" : "lDATA3", relativePath);
     }
 
     private void PackDATA(string[] pathed_parents)
@@ -104,6 +78,8 @@ public sealed partial class MainWindow
         if (!File.Exists(Config.OutputIsoPath))
             File.Copy(Config.InputIsoPath, Config.OutputIsoPath);
 
+        Data4.Refresh();
+
         var new_flag = new Dictionary<int, string>();
         for (int i = 0; i < pathed_parents.Length; i++)
         {
@@ -116,8 +92,8 @@ public sealed partial class MainWindow
             new_flag.Add(Int32.Parse(splitedPath[1]), parentPath);
         }
 
-        BinaryWriter writer = new BinaryWriter((Stream)new FileStream(Config.OutputIsoPath, FileMode.Open));
-        BinaryReader reader = new BinaryReader(File.OpenRead(Config.InputIsoPath));
+        using BinaryWriter writer = new BinaryWriter((Stream)new FileStream(Config.OutputIsoPath, FileMode.Open));
+        using BinaryReader reader = new BinaryReader(File.OpenRead(Config.InputIsoPath));
 
         writer.BaseStream.Position = Config.OffsetDATA3;
         reader.BaseStream.Position = Config.OffsetDATA3;
@@ -141,7 +117,7 @@ public sealed partial class MainWindow
             //progressbar.Fraction = 0.6 + ((double)index / 3741) * 0.4;
         }
         //заполнить нулями оставшуюся часть DATA3
-        long clear_size = 4295536640 - writer.BaseStream.Position;
+        long clear_size = Config.OffsetDATA4 - writer.BaseStream.Position;
         writer.Write(new Byte[clear_size]);
         writer.Flush();
         writer.Close();
@@ -171,33 +147,30 @@ public sealed partial class MainWindow
         //backup protected files
         string back_dir = "Backup" + Path.DirectorySeparatorChar;
         string protect_file = "protect.txt";
+        string[] protectedFiles = File.Exists(protect_file)
+            ? File.ReadAllLines(protect_file).Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith('#'))
+                .Select(TrackedFiles.NormalizePath).ToArray()
+            : [];
+        var restoredFiles = new List<string>();
         Console.WriteLine("Status: Unpack work started");
-        if (File.Exists(protect_file))
+
+        DeleteDirectory(back_dir);
+        foreach (var file in protectedFiles)
         {
-            Console.WriteLine("Status: Backup protected files");
-            if (Directory.Exists(back_dir))
-                DeleteDirectory(back_dir);
-            string[] backup_files = File.ReadAllLines(protect_file);
-            foreach (var file in backup_files)
+            Directory.CreateDirectory(Path.GetDirectoryName(back_dir + file));
+            if (File.Exists(file))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(back_dir + file));
-                if (File.Exists(file))
-                {
-                    File.Move(file, back_dir + file);
-                    Console.WriteLine("Backup: Saved " + file);
-                }
+                File.Move(file, back_dir + file);
+                Console.WriteLine("Backup: Saved " + file);
             }
         }
         //backup end
         Console.WriteLine("Status: Removing old folders");
-        if (Directory.Exists(parent_dir))
-            DeleteDirectory(parent_dir);
-        if (Directory.Exists(child_dir))
-            DeleteDirectory(child_dir);
-        if (Directory.Exists(data_dir))
-            DeleteDirectory(data_dir); 
-        if (Directory.Exists(last_dir))
-            DeleteDirectory(last_dir);
+        DeleteDirectory(parent_dir);
+        DeleteDirectory(child_dir);
+        DeleteDirectory(data_dir); 
+        DeleteDirectory(last_dir);
+        DeleteDirectory("Pictures");
         Directory.CreateDirectory(parent_dir);
         Directory.CreateDirectory(child_dir);
         Directory.CreateDirectory(data_dir);
@@ -306,37 +279,40 @@ public sealed partial class MainWindow
         ConvertPics();
 
         //restore backup
-        if (File.Exists(protect_file))
+        foreach (var file in protectedFiles)
         {
-            string[] backup_files = File.ReadAllLines(protect_file);
-            foreach (var file in backup_files)
+            if (File.Exists(back_dir + file))
             {
-                if (File.Exists(back_dir + file))
+                if (File.Exists(file))
                 {
-                    if (File.Exists(file))
-                    {
-                        File.Delete(file);
-                    }
-                    File.Move(back_dir + file, file);
-                    Console.WriteLine("Backup: Restored " + file);
+                    File.Delete(file);
                 }
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(file)));
+                File.Move(back_dir + file, file);
+                restoredFiles.Add(file);
+                Console.WriteLine("Backup: Restored " + file);
             }
-            DeleteDirectory(back_dir);
         }
+        DeleteDirectory(back_dir);
 
+        TrackedFiles.Create(restoredFiles).Save();
         Console.WriteLine("Status: Done");
         //progressbar.Fraction = 1;
     }
 
-    public void OnSaveButtonClicked()
+    public void PackClicked(TrackedFiles tracked, bool all)
     {
-        string child_dir = "cDATA3" + Path.DirectorySeparatorChar;
         string data_dir = "DATA3" + Path.DirectorySeparatorChar;
-        string parent_dir = "pDATA3" + Path.DirectorySeparatorChar;
         string pic_dir = "Pictures" + Path.DirectorySeparatorChar;
         string script_dir = "Script" + Path.DirectorySeparatorChar;
 
         Console.WriteLine("Status: Save work started");
+
+        var files = tracked.GetFilesToPack(all);
+        tracked.MarkChanged(files);
+        import_list.AddRange(files);
+        SortImportFiles();
+        PrintImportFiles();
 
         int i = 0;
         foreach (string file in ttx_list)
@@ -357,22 +333,10 @@ public sealed partial class MainWindow
             Console.WriteLine("Status: Converting image: " + file);
             i++;
             //progressbar.Fraction = 0.5 + ((double)i / tb_list.Count * 0.05);
-            string screen = data_dir + file.Substring(0, file.Length - 4) + Path.DirectorySeparatorChar;
-            ImageConv.PNGToTb(pic_dir + file, screen + "000.tp", screen + "000.tb");
-            import_list.Add(screen + "000.tb");
-        }
-        {
-            var num = "14";
-            var folder = "sysanim.ar";
-            var picPath = Path.Combine(pic_dir, num, folder, "001.png");
-
-            if (File.Exists(picPath)) {
-                Console.WriteLine("Status: Converting image: " + picPath);
-                var tb = Path.Combine(data_dir, num, folder, "001.tb");
-                var tp = Path.Combine(data_dir, num, folder, "000.tp");
-                ImageConv.PNGToTb(picPath, tp, tb);
-                import_list.Add(tb);
-            }
+            string tb = GetTbPath(file);
+            string palette = Path.Combine(Path.GetDirectoryName(tb), "000.tp");
+            ImageConv.PNGToTb(pic_dir + file, palette, tb);
+            import_list.Add(tb);
         }
         SortImportFiles();
         tb_list.Clear();
@@ -396,12 +360,20 @@ public sealed partial class MainWindow
         }
         sdat_list.Clear();
 
-        //here place for lastgen implementation
+        foreach (string file in lastgen_list.Distinct())
+        {
+            string relative = file.Substring(file.IndexOf(Path.DirectorySeparatorChar) + 1);
+            string father = ResolveDataPath(Path.GetDirectoryName(relative));
+            Console.WriteLine("Status: Packing " + file + " in " + father);
+            Pack(file, father);
+            grandchild_list.Add(father);
+        }
+        lastgen_list.Clear();
 
         foreach (string file in grandchild_list.Distinct())
         {
             string[] sliced_grandchild = file.Split(Path.DirectorySeparatorChar);
-            string father = child_dir + sliced_grandchild[1] + Path.DirectorySeparatorChar + sliced_grandchild[2];
+            string father = ResolveDataPath(Path.Combine(sliced_grandchild[1], sliced_grandchild[2]));
             Console.WriteLine("Status: Packing " + file + " in " + father);
             Pack(file, father);
             child_list.Add(father);
@@ -411,14 +383,20 @@ public sealed partial class MainWindow
         foreach (string file in child_list.Distinct())
         {
             string[] sliced_child = file.Split(Path.DirectorySeparatorChar);
-            string father = parent_dir + sliced_child[1];
+            string father = ResolveDataPath(sliced_child[1]);
             Console.WriteLine("Status: Packing " + file + " in " + father);
             Pack(file, father);
             parent_list.Add(father);
         }
         child_list.Clear();
 
-        PackDATA(parent_list.Distinct().ToArray());
+        tracked.MarkChanged(parent_list);
+        var parents = parent_list.Concat(tracked.GetChangedParents())
+            .Select(Path.GetFileName).Distinct()
+            .Select(ResolveDataPath).ToArray();
+        if (!File.Exists(Config.OutputIsoPath))
+            File.Copy(Config.InputIsoPath, Config.OutputIsoPath);
+        PackDATA(parents);
         parent_list.Clear();
 
         if (File.Exists(Config.SlpsPath))
@@ -426,6 +404,8 @@ public sealed partial class MainWindow
             Console.WriteLine("Status: SLPS import");
             SlpsImport();
         }
+        tracked.Update();
+        tracked.Save();
         Console.WriteLine("Status: Done");
         //progressbar.Fraction = 1;
     }

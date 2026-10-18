@@ -7,7 +7,8 @@ public static class Program
     private static readonly Dictionary<string, Command> commands = new() {
         { "Help", new ("Print this help", PrintHelp) },
         { "Unpack", new ("Unpack translation files from input iso", Unpack) },
-        { "Pack", new ("Pack files from list*.txt files to input iso. Slps file also packed if found.", Pack) },
+        { "Pack", new ("Pack changed tracked files to output iso. Binary texts and SLPS are always packed.", () => Pack(false)) },
+        { "PackAll", new ("Pack all tracked files to output iso (also: Pack All).", () => Pack(true)) },
         { "ApplySourceFont", new ("Apply source fonts to Data3 fonts", ApplySourceFont) },
         { "UnpackBinaryTexts", new ($"Unpack texts from japanese SLPS ({Config.SourceSLPS})", BinaryTextManager.Unpack) },
     };
@@ -18,6 +19,12 @@ public static class Program
         {
             Console.WriteLine("No arguments are passed!");
             PrintHelp();
+            return;
+        }
+
+        if (args.Length == 2 && args[0] == "Pack" && args[1] == "All")
+        {
+            Pack(true);
             return;
         }
 
@@ -219,8 +226,16 @@ public static class Program
         windowClass.OnUnpackButtonClicked();
     }
 
-    private static void Pack()
+    private static void Pack(bool all)
     {
+        if (!File.Exists(TrackedFiles.StatePath))
+        {
+            Console.WriteLine($"{TrackedFiles.StatePath} not found. Unpack probably has not been run.");
+            return;
+        }
+
+        TrackedFiles tracked = TrackedFiles.Load();
+
         if (!File.Exists(Config.SlpsPath))
         {
             Console.WriteLine("" + Config.SlpsPath + " not found");
@@ -233,16 +248,8 @@ public static class Program
         WordListProgram.CreateFifteenList();
         BinaryTextManager.Pack();
 
-        //var list = Directory
-        //.EnumerateFiles("./Pictures", "*", SearchOption.AllDirectories)
-        //.Where(p => !p.Contains("font"))
-        //.Select(p => p.Replace("\\", "/").Replace("./", ""))
-        //.ToList();
-
-        //File.WriteAllLines("listFull.txt", list);
-
         var windowClass = new MainWindow();
-        windowClass.OnSaveButtonClicked();
+        windowClass.PackClicked(tracked, all);
     }
 
     private sealed class Command(string description, Action command)

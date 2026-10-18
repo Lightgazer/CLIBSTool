@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.IO;
+using CLIBSTool;
 
 public sealed partial class MainWindow
 {
@@ -93,14 +94,20 @@ public sealed partial class MainWindow
     List<string> ttx_list = new List<string>();
     List<string> tb_list = new List<string>();
 
+    private static string GetTbPath(string picture)
+    {
+        var relative = picture.Substring(0, picture.Length - 4);
+        return picture.Contains(Path.DirectorySeparatorChar)
+            ? Path.Combine("DATA3", relative + ".tb")
+            : Path.Combine("DATA3", relative, "000.tb");
+    }
+
     private void SortImportFiles()
     {
         string[] files_to_import = import_list.Distinct().ToArray();
 
         foreach (string file in files_to_import)
         {
-            if (file.ToCharArray()[0] == '#')
-                continue;
             string[] sliced_path;
             FileInfo fileinfo = new FileInfo(file);
             if (fileinfo.Extension == ".txt")
@@ -118,24 +125,21 @@ public sealed partial class MainWindow
             if (fileinfo.Extension == ".png")
             {
                 sliced_path = file.Split(new string[] { "Pictures" + System.IO.Path.DirectorySeparatorChar }, StringSplitOptions.None);
-                if (Int32.Parse(sliced_path[sliced_path.Length - 1].Split(System.IO.Path.DirectorySeparatorChar)[0].Split('.')[0]) < 3030)
-                    ttx_list.Add(sliced_path[sliced_path.Length - 1]);
-                else
+                if (File.Exists(GetTbPath(sliced_path[sliced_path.Length - 1])))
                     tb_list.Add(sliced_path[sliced_path.Length - 1]);
+                else
+                    ttx_list.Add(sliced_path[sliced_path.Length - 1]);
                 continue;
             }
-            sliced_path = file.Split(new string[] { "DATA3" }, StringSplitOptions.None); //помни, ты делишь строкой
-            string[] sliced_file = sliced_path[sliced_path.Length - 1].Split(System.IO.Path.DirectorySeparatorChar);
+            string[] sliced_file = file.Split(Path.DirectorySeparatorChar);
             if (sliced_file.Length == 5)  //its lastgen 
-                lastgen_list.Add("DATA3" + System.IO.Path.DirectorySeparatorChar + sliced_file[1] + System.IO.Path.DirectorySeparatorChar + sliced_file[2] +
-                    System.IO.Path.DirectorySeparatorChar + sliced_file[3] + System.IO.Path.DirectorySeparatorChar + sliced_file[4]);
+                lastgen_list.Add(file);
             if (sliced_file.Length == 4) //its grandchild
-                grandchild_list.Add("DATA3" + System.IO.Path.DirectorySeparatorChar + sliced_file[1] + System.IO.Path.DirectorySeparatorChar + sliced_file[2] +
-                    System.IO.Path.DirectorySeparatorChar + sliced_file[3]);
+                grandchild_list.Add(file);
             if (sliced_file.Length == 3) //its child
-                child_list.Add("DATA3" + System.IO.Path.DirectorySeparatorChar + sliced_file[1] + System.IO.Path.DirectorySeparatorChar + sliced_file[2]);
+                child_list.Add(file);
             if (sliced_file.Length == 2) //parent 
-                parent_list.Add("DATA3" + System.IO.Path.DirectorySeparatorChar + sliced_file[1]);
+                parent_list.Add(file);
         }
         import_list.Clear();
     }
@@ -163,31 +167,10 @@ public sealed partial class MainWindow
         Console.WriteLine();
     }
 
-    private void ReadImportList(string list)
-    {
-        string[] items = File.ReadAllLines(list).Where(item => !item.StartsWith('#')).ToArray();
-        import_list.AddRange(items);
-
-        SortImportFiles();
-    }
-
     public static void DeleteDirectory(string target_dir)
     {
-        string[] files = Directory.GetFiles(target_dir);
-        string[] dirs = Directory.GetDirectories(target_dir);
-
-        foreach (string file in files)
-        {
-            File.SetAttributes(file, FileAttributes.Normal);
-            File.Delete(file);
-        }
-
-        foreach (string dir in dirs)
-        {
-            DeleteDirectory(dir);
-        }
-
-        Directory.Delete(target_dir, false);
+        if (Directory.Exists(target_dir))
+            Directory.Delete(target_dir, recursive: true);
     }
 
     protected void ExtractTARC(int tarc_numb, string dir)
@@ -213,9 +196,9 @@ public sealed partial class MainWindow
         int filelist_size = 0;
         //first read file list in father
         string[] child_names = new string[8911];
-        BinaryReader father_reader = new BinaryReader(File.OpenRead(father));
+        using BinaryReader father_reader = new BinaryReader(File.OpenRead(father));
         if (1129464148 != father_reader.ReadInt32()) //check TARC or not
-            return;
+            throw new InvalidDataException($"Not a TARC archive: {father}");
         int num_of_files = father_reader.ReadInt32();
         int offset_to_filelist = father_reader.ReadInt32();
         father_reader.BaseStream.Seek((long)offset_to_filelist, SeekOrigin.Begin);
@@ -233,7 +216,7 @@ public sealed partial class MainWindow
             if (name == child_names[i]) //so its our child
                 child_num = i;
         if (child_num == -1)
-            return;
+            throw new InvalidDataException($"{child} is not present in archive {father}");
         //lets pack
         string tmp = "temp";
         BinaryWriter writer = new BinaryWriter((Stream)new FileStream(tmp, FileMode.Create));
