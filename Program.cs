@@ -52,7 +52,7 @@ public static class Program
     private static void ApplySourceFont()
     {
         var fatForMapSourceFont = new SourceFont(
-            path: "GerSourceFonts/0/athmap05.ar/font.ttx.png",
+            path: "SourceFonts/0/athmap05.ar/font.ttx.png",
             height: 26,
             width: 26,
             collumns: 32,
@@ -75,7 +75,7 @@ public static class Program
         fatForMapSourceFont.TypeToTarget("Pictures/2460/font.ttx.png", 2460, "none");
 
         var verySmallWhiteSourceFont = new SourceFont(
-            path: "GerSourceFonts/13/townarea.ar/font.ttx.png",
+            path: "SourceFonts/13/townarea.ar/font.ttx.png",
             height: 16,
             width: 18,
             collumns: 32,
@@ -99,7 +99,7 @@ public static class Program
         shadowSourceFont.TypeToTarget("Pictures/549/font.ttx.png", 549, "none");
 
         var smallBlackSourceFont = new SourceFont(
-            path: "GerSourceFonts/14/helpmsgb.ar/font.ttx.png",
+            path: "SourceFonts/14/helpmsgb.ar/font.ttx.png",
             height: 19,
             width: 18,
             collumns: 32,
@@ -127,7 +127,7 @@ public static class Program
         smallBlackSourceFont.TypeToTarget("Pictures/2279/font.ttx.png", 2279, "none", new(2, 1), drawingOffsetY: 1);
 
         var fatWhiteSourceFont = new SourceFont(
-            path: "GerSourceFonts/2256/font.ttx.png",
+            path: "SourceFonts/2256/font.ttx.png",
             height: 30,
             width: 30,
             collumns: 32,
@@ -139,7 +139,7 @@ public static class Program
         fatWhiteSourceFont.TypeToTarget("Pictures/2462/font.ttx.png", 2462, "none", cellDelta: new(-4, -4));
 
         var middleWhiteSourceFont = new SourceFont(
-            path: "GerSourceFonts/2261/font.ttx.png",
+            path: "SourceFonts/2261/font.ttx.png",
             height: 20,
             width: 22,
             collumns: 32,
