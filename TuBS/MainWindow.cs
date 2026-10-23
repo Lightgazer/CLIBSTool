@@ -182,6 +182,7 @@ public sealed partial class MainWindow
             ExtractTARC(files_to_unpack[index], parent_dir);
         }
         File.Move(parent_dir + "15", data_dir + "15"); //needs special treatment
+        File.Move(parent_dir + "2465", data_dir + "2465"); //outro
         File.Move(parent_dir + "2466", data_dir + "2466"); //intro
         File.Move(parent_dir + "2916", data_dir + "2916"); //ttx image
 
