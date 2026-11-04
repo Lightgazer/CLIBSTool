@@ -15,11 +15,15 @@ public sealed class WordListProgram
 
     public static void CreateDefaultList()
     {
+        var wordListPath = "BinaryTexts/wpfSpecialWords.txt";
         var sourceWordsWithTags = File
-            .ReadAllLines("BinaryTexts/wpfSpecialWords.txt")
+            .ReadAllLines(wordListPath)
             .Distinct()
             .Select(str => new SourceWord(str))
             .ToArray();
+
+        // The selected word token range 0x8540-0x85FC has room for 189 entries.
+        if (sourceWordsWithTags.Length > 189) throw new Exception($"Too many words in {wordListPath} (maximum 189)");
 
         ExpandAndClearKerningFile("DATA3/14/comlfont.ar/kerning.dat", 2478, 2958, 20);
         var comlSourceFont = SourceFontFactory.CreateComl(kerningOffset: -1);
@@ -65,11 +69,15 @@ public sealed class WordListProgram
 
     public static void CreateFifteenList()
     {
+        var wordListPath = "BinaryTexts/15WordList.txt";
         var sourceWordsWithTags = File
-            .ReadAllLines("BinaryTexts/15WordList.txt")
+            .ReadAllLines(wordListPath)
             .Distinct()
             .Select(str => new SourceWord(str))
             .ToArray();
+
+        // The selected word token range 0x8540-0x85FC has room for 189 entries.
+        if (sourceWordsWithTags.Length > 189) throw new Exception($"Too many words in {wordListPath} (maximum 189)");
 
         ExpandAndClearKerningFile("DATA3/14/commfont.ar/kerning.dat", 2478, 2720, 18);
         var helpMsgSourceFont = SourceFontFactory.CreateHelpMsg();
@@ -161,7 +169,7 @@ public sealed class WordListProgram
             using var targetGraphics = Graphics.FromImage(targetBitMap);
             using var tblFileStream = new FileStream(targetTblPath, FileMode.Open);
             using var tblWriter = new BinaryWriter(tblFileStream);
-            tblWriter.BaseStream.Position = 1240;
+            tblWriter.BaseStream.Position = 1512;
 
             using var kerningFileStream = new FileStream(targetKerningPath, FileMode.Open);
             using var kerningWriter = new BinaryWriter(kerningFileStream);
@@ -339,5 +347,5 @@ public class SourceWord
 }
 
 // coml first special symbol position = 2478
-// offset in sjis.tbl where first special symbol postion written = 1240
-// [0x84; 0x74]; - д
+// offset in sjis.tbl where first special symbol postion written = 1512
+// first special symbol code = [0x85; 0x40]

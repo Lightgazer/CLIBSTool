@@ -196,8 +196,8 @@ public static class CP932Helper
             if (token.Length > 1)
             {
                 var dogNumner = WordListProgram.Current.GetTokenNumber(token);
-                AddByte(0x84);
-                AddByte((byte)(0x74 + dogNumner));
+                AddByte(0x85);
+                AddByte((byte)(0x3F + dogNumner));
                 continue;
             }
             var chToken = ReplaceGermanLetters(token)[0];
