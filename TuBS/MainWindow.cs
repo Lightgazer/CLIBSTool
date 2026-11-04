@@ -1,6 +1,5 @@
 using CLIBSTool;
 using System.Text;
-using System.Text.RegularExpressions;
 
 public sealed partial class MainWindow
 {

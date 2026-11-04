@@ -4,15 +4,11 @@ public static class Config
 {
     private static string input_iso;
     private static string output_iso;
-    private static string isoType;
     public static string InputIsoPath => input_iso;
     public static string OutputIsoPath => output_iso;
     public static string SlpsPath => "SLPS_254.97";
-    public static string IsoType
-    {
-        get => isoType;
-        set => isoType = value;
-    }
+    public static string InputLang { get; private set; }
+    public static string OutputLang { get; private set; }
     public static long OffsetDATA3 => 3221794816;
     public static long OffsetDATA4 => 4295536640;
     public static long OffsetSLPS => 4296202240;
@@ -38,11 +34,12 @@ public static class Config
                 input_iso = conf[1];
             else if (conf[0] == "Output Iso")
                 output_iso = conf[1];
-            else if (conf[0] == "Iso Type")
-                isoType = conf[1];
+            else if (conf[0] == "InputLang")
+                InputLang = conf[1];
+            else if (conf[0] == "OutputLang")
+                OutputLang = conf[1];
         }
-        if (input_iso == output_iso)
-            output_iso = output_iso + "(Copy)";
+        if (input_iso == output_iso) throw new NotSupportedException("Input iso and output iso cant be same");
     }
 }
 

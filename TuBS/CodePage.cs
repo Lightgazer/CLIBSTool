@@ -2,11 +2,12 @@
 {
     public static char[] GetCodePage(int num, string name = "none", string mode = "export")
     {
-        if (Config.IsoType == "English")
+        var lang = mode switch
         {
-            mode = "import";
-        }
-        if (mode == "export")
+            "export" => Config.InputLang,
+            "import" => Config.OutputLang,
+        };
+        if (lang == "Japanese")
         {
             if (num == 0)
                 return ("王国暦６１９年２月帝都レオグラードは人々その狂信的な政治体制に恐れおいてた東部三を手中収めゼフロス将軍幼マナリ擁しサキア要塞陣構え配下万兵らび彼幕う多く民訴こ対ァイルバムタン守り二残自六率目指" +
@@ -235,7 +236,7 @@
                 "＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠" +
                 "＠＠＠＠＠＠＠＠＠").ToCharArray();
         }
-        else
+        else if (lang == "English")
         {
             if (num == 0)
                 return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"/[]&\u3000ÄäÖöÜüß„”".ToCharArray();
@@ -338,5 +339,9 @@
                 "＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠" +
                 "＠＠＠＠＠＠＠＠＠").ToCharArray();    //8760 - space
         }
+        else if (lang == "Russian")
+        {
+        }
+        return default;
     }
 }
