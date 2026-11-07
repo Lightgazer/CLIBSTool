@@ -2,32 +2,32 @@
   "profiles": {
     "CLIBSTool": {
       "commandName": "Project",
-      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+      "workingDirectory": "$(MSBuildProjectDirectory)\\..\\.."
     },
     "ApplySourceFont": {
       "commandName": "Project",
-      "commandLineArgs": "ApplySourceFont",
-      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+      "commandLineArgs": "ApplySourceFont Russian",
+      "workingDirectory": "$(MSBuildProjectDirectory)\\..\\.."
     },
     "Unpack": {
       "commandName": "Project",
       "commandLineArgs": "Unpack",
-      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+      "workingDirectory": "$(MSBuildProjectDirectory)\\..\\.."
     },
     "Pack": {
       "commandName": "Project",
       "commandLineArgs": "Pack",
-      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+      "workingDirectory": "$(MSBuildProjectDirectory)\\..\\.."
     },
     "UnpackBinaryTexts": {
       "commandName": "Project",
       "commandLineArgs": "UnpackBinaryTexts",
-      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+      "workingDirectory": "$(MSBuildProjectDirectory)\\..\\.."
     },
     "PackAll": {
       "commandName": "Project",
       "commandLineArgs": "Pack All",
-      "workingDirectory": "D:\\bs\\TuBS\\TuBS\\TuBS\\bin\\Debug"
+      "workingDirectory": "$(MSBuildProjectDirectory)\\..\\.."
     }
   }
 }
