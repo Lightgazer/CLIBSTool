@@ -108,15 +108,16 @@ public partial class MainWindow
         {
             string[] slice = script_file.Split(Path.DirectorySeparatorChar);
             parent = slice[0];
-            code_page = CodePage.GetCodePage(int.Parse(parent), slice[1].Substring(0, slice[1].Length - 4), "import");
-            original_code_page = CodePage.GetCodePage(int.Parse(parent), slice[1].Substring(0, slice[1].Length - 4));
-            parent = Path.Combine("DATA3", parent, slice[1].Substring(0, slice[1].Length - 4));
+            var codepage_sub_num = slice[1].Substring(0, slice[1].Length - 4);
+            code_page = CodePage.GetCodePage(int.Parse(parent), codepage_sub_num, "import");
+            original_code_page = CodePage.GetCodePage(int.Parse(parent), codepage_sub_num, "origin");
+            parent = Path.Combine("DATA3", parent, codepage_sub_num);
         }
         else
         {
             parent = script_file.Split('.')[0];
             code_page = CodePage.GetCodePage(int.Parse(parent), "none", "import");
-            original_code_page = CodePage.GetCodePage(int.Parse(parent));
+            original_code_page = CodePage.GetCodePage(int.Parse(parent), "origin");
             parent = Path.Combine("DATA3", parent);
         }
 

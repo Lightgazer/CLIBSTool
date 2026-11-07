@@ -1,5 +1,7 @@
 ﻿public static class SJIStab
 {
+    public static void EncodeTo(string sjisPath, char[] chars) => EncodeTo(sjisPath, new string(chars));
+
     public static void EncodeTo(string sjisPath, string charString)
     {
         Console.WriteLine($"Updating {sjisPath}");

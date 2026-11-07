@@ -29,7 +29,7 @@ public static class SourceFontFactory
         height: 20,
         width: 18,
         collumns: 32,
-        chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,!?:;()-'\"~+/*%[]\u3000ÄäÖöÜüß„”&=".ToCharArray(),
+        chars: CodePage.GetCodePage(14, "helpmsg.ar", mode: "import"),
         kerningOffset: 0,
         specialKerings: new Dictionary<char, int> { { '\u3000', 7 } }
     );

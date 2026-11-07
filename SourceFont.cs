@@ -89,7 +89,7 @@ namespace CLIBSTool
 
         public void TypeToTarget(
             string targetPath, int data3Num, string arName, Point cellDelta = default, char[] charsToType = null, 
-            int collumnsInTarget = 0, int drawingOffsetY = 0
+            int collumnsInTarget = 0, int drawingOffsetY = 0, int fontCharNumber = 0
         ) {
             var ttxPath = targetPath.Replace("Pictures", "DATA3").Replace(".png", string.Empty);
             var kerningFileName = arName.StartsWith("com") ? "kerning.dat" : "fontsize.dat";
@@ -103,15 +103,18 @@ namespace CLIBSTool
                 throw new Exception($"File not found: {kerningPath}");
             }
             var targetCols = collumnsInTarget == 0 ? columns : collumnsInTarget;
-            TypeToTarget(targetPath, kerningPath, ttxPath, data3Num, arName, targetCols, cellDelta, charsToType, drawingOffsetY);
+            TypeToTarget(
+                targetPath, kerningPath, ttxPath, data3Num, arName, 
+                targetCols, cellDelta, charsToType, drawingOffsetY, fontCharNumber
+            );
         }
 
         public void TypeToTarget(
             string targetPngPath,string targetKerningPath, string targetTTXPath, int data3Num,
-            string arName, int targetCols, Point cellDelta, char[] charsToType, int drawingOffsetY
+            string arName, int targetCols, Point cellDelta, char[] charsToType, int drawingOffsetY, int fontCharNumber = 0
         ) {
             var tempTargetPngPath = targetPngPath + "temp";
-            var codePage = CodePage.GetCodePage(data3Num, arName);
+            var codePage = CodePage.GetCodePage(data3Num, arName, mode: "import");
             var kerningReader = new BinaryReader(new FileStream(targetKerningPath, FileMode.Open));
             var targetKerning = kerningReader.ReadBytes((int)kerningReader.BaseStream.Length);
             kerningReader.Close();
@@ -141,6 +144,14 @@ namespace CLIBSTool
             Console.WriteLine($"Saving {targetKerningPath} with new kerning");
             File.WriteAllBytes(targetKerningPath, targetKerning);
             ImageConv.PNGToTTX(targetPngPath, targetTTXPath);
+
+            if (fontCharNumber > 0)
+            {
+                var fontInfoPath = Path.Combine(Path.GetDirectoryName(targetTTXPath), "fontinfo.dat");
+                var fontInfo = File.ReadAllBytes(fontInfoPath);
+                BitConverter.GetBytes((ushort)fontCharNumber).CopyTo(fontInfo, 4);
+                File.WriteAllBytes(fontInfoPath, fontInfo);
+            }
         }
 
         private void TypeCharacter(
