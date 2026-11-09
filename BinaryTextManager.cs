@@ -1,5 +1,3 @@
-﻿using System.Reflection.PortableExecutable;
-
 namespace CLIBSTool;
 
 public class WrongLineEndingException : Exception { }
@@ -56,6 +54,9 @@ public static class BinaryTextManager
         new ("battle menu1", 3499780, 97, 8),
         new ("settings1", 3494360, 22, 12),
         new ("settings2", 3494632, 11, 12),
+        new ("wpf1-weapons", 3466016, 14, 4),
+        new ("wpf2-stats", 3390192, 6, 4),
+        new ("wpf2-weapons", 3390288, 14, 4),
     ];
 
     private static readonly List<PointerStringStorage> Storages = [
@@ -63,7 +64,11 @@ public static class BinaryTextManager
         new(3856176, 3888),
         new(3511476, 1274),
         new(3260244, 1020),
-        new(3250996, 3000)
+        new(3250996, 3000),
+        new(3847912, 2528), // wpf1-weapons and DynamicPointerLines: wpf1
+        new(3838424, 544), // wpf2-stats, wpf2-weapons and DynamicPointerLines: wpf2
+        new(3864880, 64), // DynamicPointerLines: savename
+        new(3874368, 112) // DynamicPointerLines: typing
 
         //new(3482528, 464),
         //new(3786692, 672),
@@ -84,14 +89,10 @@ public static class BinaryTextManager
         new ("select3", 3877008, 494, Encoding.Complex),
         new ("skill", 3823680, 64, Encoding.Complex),
         new ("page", 3883832, 32, Encoding.Default),
-        new ("savename", 3864880, 64, Encoding.ComplexWithWordList),
         new ("dinar", 3843952, 16, Encoding.Complex),
         new ("sale1", 3852032, 96, Encoding.Default),
         new ("file5", 3879168, 192, Encoding.Default),
         new ("captured", 3880416, 256, Encoding.Default),
-        new ("wpf1", 3847912, 2528, Encoding.ComplexWithWordList),
-        new ("wpf2", 3838424, 544, Encoding.ComplexWithWordList),
-        new ("typing", 3874368, 112, Encoding.ComplexWithWordList),
         new ("saveerr", 3869776, 40, Encoding.Default),
         new ("saveerr2", 3869840, 64, Encoding.Default),
         new ("prep", 3867824, 768, Encoding.Default),
@@ -124,7 +125,37 @@ public static class BinaryTextManager
     {
         ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, SLPSOffsetFiles);
         ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, SLPSPointerFiles);
+        ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, DynamicPointerLines.SLPSLines);
         ReadBinarySource(Config.SourceFifteen, FifteenTextDirectory, FifteenOffsetFiles);
+    }
+
+    private static void ReadBinarySource(string sourcePath, string targetDirectory, IReadOnlyList<DynamicPointerLines.Line> lines)
+    {
+        using var openFile = File.OpenRead(sourcePath);
+        using var reader = new BinaryReader(openFile);
+        Directory.CreateDirectory(targetDirectory);
+        var outputPath = Path.Combine(targetDirectory, DynamicPointerLines.FileName);
+        Console.WriteLine($"Reading dynamic pointer lines to {outputPath}");
+
+        List<string> output = [
+            "# The hexadecimal ID is the original string offset in the Japanese SLPS.",
+            "# Instruction offsets are stored in the DynamicPointerLines configuration.",
+        ];
+        foreach (var line in lines)
+        {
+            reader.BaseStream.Position = line.Offset;
+            List<byte> bytes = [];
+            byte current;
+            while ((current = reader.ReadByte()) != 0)
+            {
+                bytes.Add(current);
+            }
+            var text = CP932Helper.FromCP932(bytes).Replace('\n', '⏎');
+            output.Add(string.Empty);
+            output.Add($"# {line.Comment}: {text}");
+            output.Add($"0x{line.Offset:X8}: {text}");
+        }
+        File.WriteAllLines(outputPath, output);
     }
 
     private static void ReadBinarySource(string sourcePath, string targetDirectory, List<OffsetFile> fileList)
@@ -257,9 +288,10 @@ public static class BinaryTextManager
 
     public static void Pack()
     {
+        foreach (var storage in Storages) storage.Bracket = 0;
         WordListProgram.Current = WordListProgram.DefaultWordList;
         WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSOffsetFiles);
-        WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSPointerFiles);
+        WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSPointerFiles, DynamicPointerLines.SLPSLines);
         WordListProgram.Current = WordListProgram.FifteenWordList;
         WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, FifteenOffsetFiles);
         if (CP932Helper.HasErrors)
@@ -363,7 +395,7 @@ public static class BinaryTextManager
         }
     }
 
-    private static void WriteBinarySource(string targetPath, string sourceDirectory, List<PointerFile> listFiles)
+    private static void WriteBinarySource(string targetPath, string sourceDirectory, List<PointerFile> listFiles, IReadOnlyList<DynamicPointerLines.Line> dynamicLines)
     {
         if (File.Exists(targetPath))
         {
@@ -383,6 +415,7 @@ public static class BinaryTextManager
                 {
                     WriteFile(writer, file, sourceDirectory);
                 }
+                WriteFile(writer, dynamicLines, sourceDirectory);
                 File.Delete(backup);
             }
             catch
@@ -463,17 +496,70 @@ public static class BinaryTextManager
             writer.Write(pointers[i]);
         }
 
-        static PointerStringStorage GetStorage(int size)
-        {
-            foreach (var storage in Storages)
-            {
-                if (storage.Bracket + size <= storage.Size)
-                {
-                    return storage;
-                }
-            }
+    }
 
-            throw new StorageNotFoundException();
+    private static void WriteFile(BinaryWriter writer, IReadOnlyList<DynamicPointerLines.Line> lines, string inputDirectory)
+    {
+        var inputPath = Path.Combine(inputDirectory, DynamicPointerLines.FileName);
+        Console.WriteLine($"Writing dynamic pointer lines from {inputPath}");
+        var configuration = lines.ToDictionary(line => line.Offset);
+        var translations = new Dictionary<int, string>();
+        foreach (var input in File.ReadLines(inputPath))
+        {
+            if (string.IsNullOrWhiteSpace(input) || input.TrimStart().StartsWith('#')) continue;
+            var parts = input.Split(": ", 2);
+            var id = ReadId(parts);
+            translations.Add(id, parts[1].Replace('⏎', '\n'));
         }
+
+        foreach (var (id, text) in translations)
+        {
+            var line = configuration[id];
+            var bytes = CP932Helper.ToComplexEn(text, checked(text.Length * 2 + 2));
+            Array.Resize(ref bytes, Array.IndexOf(bytes, (byte)0) + 1);
+            var storage = GetStorage(bytes.Length);
+            var offset = storage.Offset + storage.Bracket;
+            writer.BaseStream.Position = offset;
+            writer.Write(bytes);
+            storage.Bracket += bytes.Length;
+
+            var address = offset + PointerFile.PointerDelta;
+            var high = (ushort)((address + 0x8000) >> 16);
+            var low = (ushort)(address & 0xFFFF);
+            foreach (var reference in line.References)
+            {
+                // In little-endian MIPS instructions the immediate occupies the first two bytes.
+                writer.BaseStream.Position = reference.LuiOffset;
+                writer.Write(high);
+                writer.BaseStream.Position = reference.AddiuOffset;
+                writer.Write(low);
+            }
+        }
+
+        int ReadId(string[] parts)
+        {
+            var hasValidFormat = parts.Length == 2 && parts[0].StartsWith("0x");
+            if (!hasValidFormat)
+                throw new InvalidDataException($"Invalid format pointer line: {string.Join(": ", parts)}");
+            var style = System.Globalization.NumberStyles.HexNumber;
+            var culture = System.Globalization.CultureInfo.InvariantCulture;
+            var hasValidId = int.TryParse(parts[0].AsSpan(2), style, culture, out var id);
+            if (!hasValidId)
+                throw new InvalidDataException($"Invalid dynamic pointer line: {string.Join(": ", parts)}");
+            return id;
+        }
+    }
+
+    private static PointerStringStorage GetStorage(int size)
+    {
+        foreach (var storage in Storages)
+        {
+            if (storage.Bracket + size <= storage.Size)
+            {
+                return storage;
+            }
+        }
+
+        throw new StorageNotFoundException();
     }
 }
