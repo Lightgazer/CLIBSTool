@@ -43,7 +43,7 @@ public static class BinaryTextManager
         public int Bracket = 0;
     }
 
-    private enum Encoding
+    internal enum Encoding
     {
         Default,
         Complex,
@@ -57,18 +57,42 @@ public static class BinaryTextManager
         new ("wpf1-weapons", 3466016, 14, 4),
         new ("wpf2-stats", 3390192, 6, 4),
         new ("wpf2-weapons", 3390288, 14, 4),
+        new ("sysfile", 3510656, 4, 4),
     ];
 
     private static readonly List<PointerStringStorage> Storages = [
-        new(3852736, 2480),
-        new(3856176, 3888),
-        new(3511476, 1274),
-        new(3260244, 1020),
         new(3250996, 3000),
-        new(3847912, 2528), // wpf1-weapons and DynamicPointerLines: wpf1
+        new(3260244, 1020),
+        new(3511476, 1274),
+        new(3823680, 24), // skill message
+        new(3823720, 24), // skill message
         new(3838424, 544), // wpf2-stats, wpf2-weapons and DynamicPointerLines: wpf2
-        new(3864880, 64), // DynamicPointerLines: savename
-        new(3874368, 112) // DynamicPointerLines: typing
+        new(3843952, 16), // dinar
+        new(3845872, 128), // buttons2
+        new(3846512, 288), // buttons1
+        new(3847912, 2528), // wpf1-weapons and DynamicPointerLines: wpf1
+        new(3852032, 96), // sale1
+        new(3852736, 2480),
+        new(3855280, 96), // settings1-2
+        new(3856176, 3888),
+        new(3864544, 120), // sysfile
+        new(3864880, 64), // savename
+        new(3866592, 152), // settings1-3
+        new(3867192, 24), // yesno
+        new(3867648, 112), // limit
+        new(3867824, 768), // prep
+        new(3869776, 40), // saveerr
+        new(3869840, 64), // saveerr2
+        new(3874144, 112), // file4copy
+        new(3874368, 112), // typing
+        new(3876336, 112), // file4
+        new(3876576, 46), // exchange
+        new(3876688, 142), // select1
+        new(3876864, 110), // select2
+        new(3877008, 494), // select3
+        new(3879168, 192), // file5
+        new(3880416, 256), // captured
+        new(3883832, 32) // page
 
         //new(3482528, 464),
         //new(3786692, 672),
@@ -77,29 +101,7 @@ public static class BinaryTextManager
     ];
 
     private static readonly List<OffsetFile> SLPSOffsetFiles = [
-        new ("yesno", 3867192, 24, Encoding.Default),
-        new ("settings1-2", 3855280, 96, Encoding.Default),
-        new ("settings1-3", 3866592, 152, Encoding.Default),
         new ("settings1-4", 3866912, 32, Encoding.Default),
-        new ("buttons1", 3846512, 288, Encoding.Default),
-        new ("buttons2", 3845872, 128, Encoding.Default),
-        new ("exchange", 3876576, 46, Encoding.Default),
-        new ("select1", 3876688, 142, Encoding.Default),
-        new ("select2", 3876864, 110, Encoding.Default),
-        new ("select3", 3877008, 494, Encoding.Complex),
-        new ("skill", 3823680, 64, Encoding.Complex),
-        new ("page", 3883832, 32, Encoding.Default),
-        new ("dinar", 3843952, 16, Encoding.Complex),
-        new ("sale1", 3852032, 96, Encoding.Default),
-        new ("file5", 3879168, 192, Encoding.Default),
-        new ("captured", 3880416, 256, Encoding.Default),
-        new ("saveerr", 3869776, 40, Encoding.Default),
-        new ("saveerr2", 3869840, 64, Encoding.Default),
-        new ("prep", 3867824, 768, Encoding.Default),
-        new ("limit", 3867648, 112, Encoding.Default),
-        new ("file4", 3876336, 112, Encoding.Default),
-        new ("sysfile", 3864544, 120, Encoding.Default),
-        new ("file4copy", 3874144, 112, Encoding.Default),
         // this does not translated in English version
         //new ("title", 3805024, 16),
         //new ("mode", 3830176, 80),
@@ -354,11 +356,6 @@ public static class BinaryTextManager
         for (int lineIndex = 0; lineIndex < inputLines.Length; lineIndex++)
         {
             var (lineSize, line) = inputLines[lineIndex];
-            if (line == "skill_exp_opt2")
-            {
-                lineOffset += lineSize;
-                continue;
-            }
             line = line.Replace('⏎', '\n');
             var bytes = ToBytes(line, lineSize);
             writer.BaseStream.Position = file.Offset + lineOffset;
@@ -515,7 +512,13 @@ public static class BinaryTextManager
         foreach (var (id, text) in translations)
         {
             var line = configuration[id];
-            var bytes = CP932Helper.ToComplexEn(text, checked(text.Length * 2 + 2));
+            var size = checked(text.Length * 2 + 2);
+            var bytes = line.Encoding switch
+            {
+                Encoding.Default => CP932Helper.ToCP932(text, size),
+                Encoding.Complex => CP932Helper.ToComplexEn(text, size),
+                _ => throw new NotSupportedException($"Unsupported dynamic pointer encoding: {line.Encoding}")
+            };
             Array.Resize(ref bytes, Array.IndexOf(bytes, (byte)0) + 1);
             var storage = GetStorage(bytes.Length);
             var offset = storage.Offset + storage.Bracket;
