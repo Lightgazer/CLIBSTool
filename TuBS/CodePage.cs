@@ -6,7 +6,8 @@
         {
             "export" => Config.InputLang,
             "import" => Config.OutputLang,
-            "origin" => "Japanese"
+            "origin" => "Japanese",
+            _ => throw new NotImplementedException(),
         };
         if (lang == "Japanese")
         {
