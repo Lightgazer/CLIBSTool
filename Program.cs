@@ -11,6 +11,7 @@ public static partial class Program
         { "PackAll", new ("Pack all tracked files to output iso (also: Pack All).", () => Pack(true)) },
         { "ApplySourceFont", new ("Apply source fonts to Data3 fonts", ApplySourceFont) },
         { "UnpackBinaryTexts", new ($"Unpack texts from japanese SLPS ({Config.SourceSLPS})", BinaryTextManager.Unpack) },
+        { "ConvertImage", new ("ConvertImage <input.ttx> <output.png> or <input.png> <existing-output.ttx>", ConvertImage) },
     };
 
     public static void Main(string[] args)
@@ -61,6 +62,33 @@ public static partial class Program
                 break;
             default:
                 throw new NotSupportedException($"Unknown font language: {args[1]}");
+        }
+    }
+
+    private static void ConvertImage(string[] args)
+    {
+        if (args.Length != 3)
+        {
+            Console.WriteLine(commands["ConvertImage"].Description);
+            return;
+        }
+
+        var input = args[1];
+        var output = args[2];
+        var from = Path.GetExtension(input).ToLowerInvariant();
+        var to = Path.GetExtension(output).ToLowerInvariant();
+        if (from == ".ttx" && to == ".png")
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)));
+            ImageConv.TTXToPNG(input, output);
+        }
+        else if (from == ".png" && to == ".ttx")
+        {
+            ImageConv.PNGToTTX(input, output);
+        }
+        else
+        {
+            throw new NotSupportedException("Supported conversions: .ttx -> .png and .png -> existing .ttx");
         }
     }
 

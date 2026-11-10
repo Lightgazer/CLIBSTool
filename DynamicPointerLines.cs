@@ -171,5 +171,16 @@ internal static class DynamicPointerLines
         new(0x003B1D90, "file4copy", Encoding.Default, [new(0x0025EAEC, 0x0025EAF0)]),
         new(0x003B1D98, "file4copy", Encoding.Default, [new(0x0025ECE8, 0x0025ECF4), new(0x002602C8, 0x002602D4)]),
         new(0x003B1DA0, "file4copy", Encoding.Default, [new(0x0025EE2C, 0x0025EE30)]),
+        new(0x003A5940, "ascii", Encoding.Ascii, [new(0x00099820, 0x00099828)]),
+        new(0x003A93F8, "ascii", Encoding.Ascii, [new(0x000EEE10, 0x000EEE14), new(0x000EEE60, 0x000EEE78), new(0x000EEEC0, 0x000EEED8)]),
+        new(0x003AAD98, "ascii", Encoding.Ascii, [new(0x0013A384, 0x0013A388), new(0x0013A3EC, 0x0013A3F4)]),
+        new(0x003AC690, "ascii", Encoding.Ascii, [new(0x00187618, 0x00187628)]),
+        new(0x003AC768, "ascii", Encoding.Ascii, [new(0x0018A36C, 0x0018A370), new(0x0018A3C4, 0x0018A3E0)]),
+        new(0x003AC778, "ascii", Encoding.Ascii, [new(0x0018A464, 0x0018A468), new(0x0018A4B8, 0x0018A4C8), new(0x0018A52C, 0x0018A530), new(0x0018A580, 0x0018A598)]),
+        new(0x003B03B8, "ascii", Encoding.Ascii, [new(0x00219EB0, 0x00219EB8), new(0x00219F08, 0x00219F20), new(0x0021A050, 0x0021A058), new(0x0021A0A8, 0x0021A0B8), new(0x0021A108, 0x0021A110), new(0x0021A160, 0x0021A170), new(0x0021A2C0, 0x0021A2C8), new(0x0021A318, 0x0021A334)]),
+        new(0x003B03D0, "ascii", Encoding.Ascii, [new(0x0021A1D8, 0x0021A1E0), new(0x0021A244, 0x0021A258)]),
+        new(0x003B0C00, "ascii", Encoding.Ascii, [new(0x0023AA9C, 0x0023AAA0), new(0x0023AB18, 0x0023AB2C)]),
+        new(0x003B0C28, "ascii", Encoding.Ascii, [new(0x0023AB78, 0x0023AB7C), new(0x0023ABE8, 0x0023ABF0), new(0x0023B29C, 0x0023B2A0), new(0x0023B2EC, 0x0023B2F4)]),
+        new(0x003B35C0, "ascii", Encoding.Ascii, [new(0x002C0DC0, 0x002C0DC4), new(0x002C0E44, 0x002C0E4C)]),
     ];
 }

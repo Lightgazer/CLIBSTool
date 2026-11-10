@@ -47,7 +47,8 @@ public static class BinaryTextManager
     {
         Default,
         Complex,
-        ComplexWithWordList
+        ComplexWithWordList,
+        Ascii
     }
 
     private static readonly List<PointerFile> SLPSPointerFiles = [
@@ -152,7 +153,9 @@ public static class BinaryTextManager
             {
                 bytes.Add(current);
             }
-            var text = CP932Helper.FromCP932(bytes).Replace('\n', '⏎');
+            var text = (line.Encoding == Encoding.Ascii
+                ? AsciiHelper.From(bytes)
+                : CP932Helper.FromCP932(bytes)).Replace('\n', '⏎');
             output.Add(string.Empty);
             output.Add($"# {line.Comment}: {text}");
             output.Add($"0x{line.Offset:X8}: {text}");
@@ -299,6 +302,17 @@ public static class BinaryTextManager
         if (CP932Helper.HasErrors)
         {
             throw new Exception("Please fix errors in BinaryTexts");
+        }
+        if (Config.OutputLang == "Russian") NewMethod();
+    }
+
+    private static void NewMethod()
+    {
+        if (File.Exists(Config.SlpsPath))
+        {
+            using var writer = new BinaryWriter(File.OpenWrite(Config.SlpsPath));
+            writer.BaseStream.Position = 0x000A3E74;
+            writer.Write(0x0012963Eu); // Read extended ASCII characters as unsigned bytes.
         }
     }
 
@@ -517,6 +531,7 @@ public static class BinaryTextManager
             {
                 Encoding.Default => CP932Helper.ToCP932(text, size),
                 Encoding.Complex => CP932Helper.ToComplexEn(text, size),
+                Encoding.Ascii => AsciiHelper.To(text),
                 _ => throw new NotSupportedException($"Unsupported dynamic pointer encoding: {line.Encoding}")
             };
             Array.Resize(ref bytes, Array.IndexOf(bytes, (byte)0) + 1);
