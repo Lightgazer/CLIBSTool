@@ -7,8 +7,8 @@ public partial class MainWindow
     private static ushort FindChar(char ch, char[] code_page, char[] second_code_page)
     {
         ushort ret = FindChar(ch, code_page);
-        if (ret == 10000)
-            return FindChar(ch, second_code_page);
+        if (ret == 10000) ret = FindChar(ch, second_code_page);
+        if (ret == 10000) throw new NotSupportedException($"Unknown {ch} passed to {nameof(FindChar)}");
         return ret;
     }
 
