@@ -1,6 +1,6 @@
 ﻿public sealed partial class MainWindow
 {
-    protected List<string> DumpText(FileInfo file, char[] code_page)
+    private List<string> DumpText(FileInfo file, char[] code_page)
     {
         List<string> script = new List<string>();
         BinaryReader reader = new BinaryReader(File.OpenRead(file.FullName));
@@ -122,7 +122,7 @@
         return script;
     }
 
-    protected void ScriptMaker(string script_dir, string out_txt)
+    private void ScriptMaker(string script_dir, string out_txt)
     {
         StreamWriter writer = new StreamWriter((Stream)new FileStream(out_txt, FileMode.Create));
         DirectoryInfo info = new DirectoryInfo(script_dir);

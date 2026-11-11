@@ -4,7 +4,7 @@ using CLIBSTool;
 
 public sealed partial class MainWindow
 {
-    protected void ConvertPics()
+    private void ConvertPics()
     {
         string out_dir = "DATA3" + Path.DirectorySeparatorChar;
         string pic_dir = "Pictures";
@@ -178,7 +178,7 @@ public sealed partial class MainWindow
             Directory.Delete(target_dir, recursive: true);
     }
 
-    protected void ExtractTARC(int tarc_numb, string dir)
+    private void ExtractTARC(int tarc_numb, string dir)
     {
         BinaryReader isoReader = new BinaryReader(File.OpenRead(Config.InputIsoPath));
         isoReader.BaseStream.Position = Config.OffsetDATA4 + 368L + tarc_numb * 12;
@@ -196,7 +196,7 @@ public sealed partial class MainWindow
         isoReader.Close();
     }
 
-    protected void Pack(string child, string father)
+    private void Pack(string child, string father)
     {
         int filelist_size = 0;
         //first read file list in father

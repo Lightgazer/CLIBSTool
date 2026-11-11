@@ -3,7 +3,7 @@ using System.Text;
 
 public sealed partial class MainWindow
 {
-    protected void UnpackTARC(string file, string child_dir, string out_dir)
+    private void UnpackTARC(string file, string child_dir, string out_dir)
     {
         BinaryWriter writer;
         using BinaryReader reader = new BinaryReader(File.OpenRead(file));

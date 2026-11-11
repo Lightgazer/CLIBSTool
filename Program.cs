@@ -63,6 +63,8 @@ public static partial class Program
             default:
                 throw new NotSupportedException($"Unknown font language: {args[1]}");
         }
+
+        File.Copy(sourceFontVersionPath, appliedSourceFontVersionPath, overwrite: true);
     }
 
     private static void ConvertImage(string[] args)
@@ -122,6 +124,9 @@ public static partial class Program
             Console.WriteLine("" + Config.SlpsPath + " not found");
             return;
         }
+
+        if (IsApplySourceFontNeeded())
+            ApplySourceFont(["ApplySourceFont", Config.OutputLang]);
 
         WordListProgram.CreateDefaultList();
         WordListProgram.CreateFifteenList();
