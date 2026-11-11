@@ -168,6 +168,19 @@ public static partial class Program
             chars: CodePage.GetCodePage(2449, mode: "import")
         );
 
+        foreach (var font in new[] { "font2.ar", "font3.ar" })
+        {
+            var sourceDirectory = Path.Combine("SourceFonts", "2962", font);
+            var dataDirectory = Path.Combine("DATA3", "2962", font);
+            var pictureDirectory = Path.Combine("Pictures", "2962", font);
+            Directory.CreateDirectory(dataDirectory);
+            Directory.CreateDirectory(pictureDirectory);
+            Console.WriteLine($"Copying prepared Russian font: {font}");
+            File.Copy(Path.Combine(sourceDirectory, "tex.ttx"), Path.Combine(dataDirectory, "tex.ttx"), overwrite: true);
+            File.Copy(Path.Combine(sourceDirectory, "iconinfo.dat"), Path.Combine(dataDirectory, "iconinfo.dat"), overwrite: true);
+            File.Copy(Path.Combine(sourceDirectory, "tex.ttx.png"), Path.Combine(pictureDirectory, "tex.ttx.png"), overwrite: true);
+        }
+
         Console.WriteLine("Done");
     }
 
