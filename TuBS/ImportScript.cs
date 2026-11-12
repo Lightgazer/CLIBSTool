@@ -117,7 +117,7 @@ public partial class MainWindow
         {
             parent = script_file.Split('.')[0];
             code_page = CodePage.GetCodePage(int.Parse(parent), "none", "import");
-            original_code_page = CodePage.GetCodePage(int.Parse(parent), "origin");
+            original_code_page = CodePage.GetCodePage(int.Parse(parent), mode: "origin");
             parent = Path.Combine("DATA3", parent);
         }
 
