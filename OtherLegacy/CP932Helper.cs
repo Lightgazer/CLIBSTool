@@ -1,5 +1,4 @@
-﻿using CLIBSTool;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
 public static class CP932Helper
@@ -180,28 +179,13 @@ public static class CP932Helper
 
     public static byte[] ToComplexEn(string str, int size)
     {
-        return ToComplexEn(str, size, str => str.ToCharArray().Select(c => c.ToString()).ToList());
-    }
-
-    public static byte[] ToComplexEn(string str, int size, Func<string, List<string>> tokenizer)
-    {
         byte[] ret = new byte[size];
         bool spflag = false;
 
         int i = 0;
-        var tokens = tokenizer.Invoke(str);
 
-        foreach(var token in tokens)
+        foreach (var chToken in ReplaceGermanLetters(str))
         {
-            if (token.Length > 1)
-            {
-                var dogNumner = WordListProgram.Current.GetTokenNumber(token);
-                AddByte(0x85);
-                AddByte((byte)(0x3F + dogNumner));
-                continue;
-            }
-            var chToken = ReplaceGermanLetters(token)[0];
-
             if (spflag == true)
             {
                 if (chToken == '%')

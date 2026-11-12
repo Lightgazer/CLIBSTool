@@ -128,8 +128,6 @@ public static partial class Program
         if (IsApplySourceFontNeeded())
             ApplySourceFont(["ApplySourceFont", Config.OutputLang]);
 
-        WordListProgram.CreateDefaultList();
-        WordListProgram.CreateFifteenList();
         BinaryTextManager.Pack();
 
         var windowClass = new MainWindow();

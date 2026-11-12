@@ -26,8 +26,6 @@ public static class BinaryTextManager
 
     private record class PointerFile(string Name, int PointerOffset, int PointerCount, int PointerStep)
     {
-        public const int PointerDelta = 1048320;
-
         public string GetFileName() => Path.Combine(Name + ".txt");
     }
 
@@ -43,13 +41,16 @@ public static class BinaryTextManager
         public int Bracket = 0;
     }
 
-    internal enum Encoding
+    public enum Encoding
     {
         Default,
         Complex,
-        ComplexWithWordList,
         Ascii
     }
+
+    private const int SLPSPointerDelta = 1048320;
+    private const int FifteenPointerDelta = 0x533200;
+    private static int CurrentPointerDelta;
 
     private static readonly List<PointerFile> SLPSPointerFiles = [
         new ("battle menu1", 3499780, 97, 8),
@@ -61,7 +62,7 @@ public static class BinaryTextManager
         new ("sysfile", 3510656, 4, 4),
     ];
 
-    private static readonly List<PointerStringStorage> Storages = [
+    private static readonly List<PointerStringStorage> SLPSStorages = [
         new(3250996, 3000),
         new(3260244, 1020),
         new(3511476, 1274),
@@ -110,13 +111,32 @@ public static class BinaryTextManager
         //new ("typing", 3873312 + 832, 944 - 832)
     ];
 
-    private static readonly List<OffsetFile> FifteenOffsetFiles = [
-        new ("playtime", 247872, 16, Encoding.ComplexWithWordList),
-        new ("hms", 247896, 32, Encoding.ComplexWithWordList),
-        new ("fame", 247936, 24, Encoding.ComplexWithWordList),
-        new ("survived", 248032, 176, Encoding.ComplexWithWordList),
-        new ("chapter", 248432, 8, Encoding.ComplexWithWordList),
+    // Module 15 owns its storage, including template fields overwritten by the constructor.
+    private static readonly List<PointerStringStorage> FifteenStorages = [
+        new(248032, 176), // survived
+        new(250020, 92), // padding after the nine-entry jump table
+        new(223152, 80), // padding after the last function
+        new(247896, 32), // hms
+        new(247936, 24), // fame
+        new(247872, 16), // playtime
+        new(248432, 8), // chapter
+        new(225092, 52), // UI template 0x00036D80: +0x1C4..+0x1F7
+        new(225780, 52), // UI template 0x00037030: +0x1C4..+0x1F7
+        new(226628, 52), // UI template 0x00037380: +0x1C4..+0x1F7
+        new(227220, 52), // UI template 0x000375D0: +0x1C4..+0x1F7
+        new(227812, 52), // UI template 0x00037820: +0x1C4..+0x1F7
+        new(228468, 52), // UI template 0x00037AB0: +0x1C4..+0x1F7
+        new(230468, 52), // UI template 0x00038280: +0x1C4..+0x1F7
+        new(231428, 52), // UI template 0x00038640: +0x1C4..+0x1F7
+        new(232500, 52), // UI template 0x00038A70: +0x1C4..+0x1F7
+        new(234292, 52), // UI template 0x00039170: +0x1C4..+0x1F7
+        new(235508, 52), // UI template 0x00039630: +0x1C4..+0x1F7
+        new(237684, 52), // UI template 0x00039EB0: +0x1C4..+0x1F7
+        new(238276, 52), // UI template 0x0003A100: +0x1C4..+0x1F7
+        new(239044, 52) // UI template 0x0003A400: +0x1C4..+0x1F7
     ];
+
+    private static List<PointerStringStorage> CurrentStorages = SLPSStorages;
 
     private const string ZeroPointer = $"[Zero Pointer]";
 
@@ -126,10 +146,11 @@ public static class BinaryTextManager
 
     public static void Unpack()
     {
+        CurrentPointerDelta = SLPSPointerDelta;
         ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, SLPSOffsetFiles);
         ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, SLPSPointerFiles);
         ReadBinarySource(Config.SourceSLPS, SLPSTextDirectory, DynamicPointerLines.SLPSLines);
-        ReadBinarySource(Config.SourceFifteen, FifteenTextDirectory, FifteenOffsetFiles);
+        ReadBinarySource(Config.SourceFifteen, FifteenTextDirectory, DynamicPointerLines.FifteenLines);
     }
 
     private static void ReadBinarySource(string sourcePath, string targetDirectory, IReadOnlyList<DynamicPointerLines.Line> lines)
@@ -141,7 +162,7 @@ public static class BinaryTextManager
         Console.WriteLine($"Reading dynamic pointer lines to {outputPath}");
 
         List<string> output = [
-            "# The hexadecimal ID is the original string offset in the Japanese SLPS.",
+            "# The hexadecimal ID is the original string offset in the Japanese source binary.",
             "# Instruction offsets are stored in the DynamicPointerLines configuration.",
         ];
         foreach (var line in lines)
@@ -253,7 +274,7 @@ public static class BinaryTextManager
         {
             reader.BaseStream.Position = pointerOffset + i * file.PointerStep;
             pointers[i] = reader.ReadInt32();
-            pointersOutput[i] = pointers[i] - PointerFile.PointerDelta;
+            pointersOutput[i] = pointers[i] - CurrentPointerDelta;
         }
 
         var outputLines = new List<string>();
@@ -265,7 +286,7 @@ public static class BinaryTextManager
                 outputLines.Add(ZeroPointer);
                 continue;
             }
-            reader.BaseStream.Position = pointer - PointerFile.PointerDelta;
+            reader.BaseStream.Position = pointer - CurrentPointerDelta;
             var bytes = new List<byte>();
             byte currentByte;
             do
@@ -293,12 +314,16 @@ public static class BinaryTextManager
 
     public static void Pack()
     {
-        foreach (var storage in Storages) storage.Bracket = 0;
-        WordListProgram.Current = WordListProgram.DefaultWordList;
+        CurrentPointerDelta = SLPSPointerDelta;
+        CurrentStorages = SLPSStorages;
+        foreach (var storage in CurrentStorages) storage.Bracket = 0;
         WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSOffsetFiles);
-        WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSPointerFiles, DynamicPointerLines.SLPSLines);
-        WordListProgram.Current = WordListProgram.FifteenWordList;
-        WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, FifteenOffsetFiles);
+        WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, SLPSPointerFiles);
+        WriteBinarySource(Config.SlpsPath, SLPSTextDirectory, DynamicPointerLines.SLPSLines);
+        CurrentPointerDelta = FifteenPointerDelta;
+        CurrentStorages = FifteenStorages;
+        foreach (var storage in CurrentStorages) storage.Bracket = 0;
+        WriteBinarySource(Config.TargetFifteen, FifteenTextDirectory, DynamicPointerLines.FifteenLines);
         if (CP932Helper.HasErrors)
         {
             throw new Exception("Please fix errors in BinaryTexts");
@@ -394,10 +419,6 @@ public static class BinaryTextManager
             {
                 return CP932Helper.ToCP932(line, lineSize);
             }
-            if (encoding == Encoding.ComplexWithWordList)
-            {
-                return CP932Helper.ToComplexEn(line, lineSize, WordListProgram.Current.GetTokens);
-            }
             if (encoding == Encoding.Complex)
             {
                 return CP932Helper.ToComplexEn(line, lineSize);
@@ -406,7 +427,7 @@ public static class BinaryTextManager
         }
     }
 
-    private static void WriteBinarySource(string targetPath, string sourceDirectory, List<PointerFile> listFiles, IReadOnlyList<DynamicPointerLines.Line> dynamicLines)
+    private static void WriteBinarySource(string targetPath, string sourceDirectory, List<PointerFile> listFiles)
     {
         if (File.Exists(targetPath))
         {
@@ -426,6 +447,40 @@ public static class BinaryTextManager
                 {
                     WriteFile(writer, file, sourceDirectory);
                 }
+                File.Delete(backup);
+            }
+            catch
+            {
+                Console.WriteLine($"Catched exception, restoring original {targetPath} before rethrow");
+                File.Delete(targetPath);
+                File.Move(backup, targetPath);
+                throw;
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Skip writing scripts to {targetPath}, file not found");
+        }
+    }
+
+    private static void WriteBinarySource(
+        string targetPath, string sourceDirectory, IReadOnlyList<DynamicPointerLines.Line> dynamicLines
+    ) 
+    {
+        if (File.Exists(targetPath))
+        {
+            Console.WriteLine($"Start writing dynamic pointer scripts to {targetPath}");
+
+            var backup = targetPath + "Backup";
+            if (!File.Exists(backup))
+            {
+                File.Copy(targetPath, backup);
+            }
+
+            try
+            {
+                using var openFile = File.Open(targetPath, FileMode.Open);
+                using var writer = new BinaryWriter(openFile);
                 WriteFile(writer, dynamicLines, sourceDirectory);
                 File.Delete(backup);
             }
@@ -490,13 +545,13 @@ public static class BinaryTextManager
                 var endIndex = int.Parse(startAndEnd[1]) - 1;
                 for (var i = startIndex; i <= endIndex; i++)
                 {
-                    pointers[i] = realPointer + PointerFile.PointerDelta;
+                    pointers[i] = realPointer + CurrentPointerDelta;
                 }
             }
             else
             {
                 var pointerIndex = int.Parse(lineNumberString) - 1;
-                pointers[pointerIndex] = realPointer + PointerFile.PointerDelta;
+                pointers[pointerIndex] = realPointer + CurrentPointerDelta;
             }
         }
 
@@ -541,7 +596,7 @@ public static class BinaryTextManager
             writer.Write(bytes);
             storage.Bracket += bytes.Length;
 
-            var address = offset + PointerFile.PointerDelta;
+            var address = offset + CurrentPointerDelta;
             var high = (ushort)((address + 0x8000) >> 16);
             var low = (ushort)(address & 0xFFFF);
             foreach (var reference in line.References)
@@ -570,7 +625,7 @@ public static class BinaryTextManager
 
     private static PointerStringStorage GetStorage(int size)
     {
-        foreach (var storage in Storages)
+        foreach (var storage in CurrentStorages)
         {
             if (storage.Bracket + size <= storage.Size)
             {

@@ -2,15 +2,15 @@ using Encoding = CLIBSTool.BinaryTextManager.Encoding;
 
 namespace CLIBSTool;
 
-// File offsets in the Japanese BinaryTexts/Source/SLPS_254.97.
-internal static class DynamicPointerLines
+// File offsets in the corresponding Japanese binaries under BinaryTexts/Source.
+public static class DynamicPointerLines
 {
-    internal const string FileName = "DynamicPointerLines.txt";
+    public const string FileName = "DynamicPointerLines.txt";
 
-    internal sealed record PointerReference(int LuiOffset, int AddiuOffset);
-    internal sealed record Line(int Offset, string Comment, Encoding Encoding, PointerReference[] References);
+    public sealed record PointerReference(int LuiOffset, int AddiuOffset);
+    public sealed record Line(int Offset, string Comment, Encoding Encoding, PointerReference[] References);
 
-    internal static readonly IReadOnlyList<Line> SLPSLines = [
+    public static readonly IReadOnlyList<Line> SLPSLines = [
         new(0x003AF930, "savename", Encoding.Complex, [new(0x001E0900, 0x001E0910)]),
         new(0x003B1E40, "typing", Encoding.Complex, [new(0x0025FDE4, 0x0025FE00)]),
         new(0x003B1E70, "typing", Encoding.Complex, [new(0x0025FE08, 0x0025FE24)]),
@@ -182,5 +182,31 @@ internal static class DynamicPointerLines
         new(0x003B0C00, "ascii", Encoding.Ascii, [new(0x0023AA9C, 0x0023AAA0), new(0x0023AB18, 0x0023AB2C)]),
         new(0x003B0C28, "ascii", Encoding.Ascii, [new(0x0023AB78, 0x0023AB7C), new(0x0023ABE8, 0x0023ABF0), new(0x0023B29C, 0x0023B2A0), new(0x0023B2EC, 0x0023B2F4)]),
         new(0x003B35C0, "ascii", Encoding.Ascii, [new(0x002C0DC0, 0x002C0DC4), new(0x002C0E44, 0x002C0E4C)]),
+    ];
+
+    public static readonly IReadOnlyList<Line> FifteenLines = [
+        new(0x0003C840, "playtime", Encoding.Complex, [new(0x0001A3FC, 0x0001A404)]),
+        new(0x0003C858, "hms", Encoding.Complex, [new(0x0001A520, 0x0001A524)]),
+        new(0x0003C860, "hms", Encoding.Complex, [new(0x0001A608, 0x0001A60C)]),
+        new(0x0003C868, "hms", Encoding.Complex, [new(0x0001A6F0, 0x0001A6F4)]),
+        new(0x0003C870, "hms", Encoding.Complex, [new(0x0001A78C, 0x0001A790)]),
+        new(0x0003C880, "fame", Encoding.Complex, [new(0x0001A908, 0x0001A90C)]),
+        new(0x0003C888, "fame", Encoding.Complex, [new(0x0001AA80, 0x0001AA84)]),
+        new(0x0003C890, "fame", Encoding.Complex, [new(0x0001ABF8, 0x0001ABFC)]),
+        new(0x0003C8E0, "survived", Encoding.Complex, [new(0x0001C130, 0x0001C134)]),
+        new(0x0003C8F0, "survived", Encoding.Complex, [new(0x0001C270, 0x0001C278)]),
+        new(0x0003C8F8, "survived", Encoding.Complex, [new(0x0001C4A8, 0x0001C4B8)]),
+        new(0x0003C900, "survived", Encoding.Complex, [new(0x0001C650, 0x0001C654)]),
+        new(0x0003C910, "survived", Encoding.Complex, [new(0x0001C698, 0x0001C69C)]),
+        new(0x0003C920, "survived", Encoding.Complex, [new(0x0001C6E4, 0x0001C6E8)]),
+        new(0x0003C928, "survived", Encoding.Complex, [new(0x0001C728, 0x0001C72C)]),
+        new(0x0003C930, "survived", Encoding.Complex, [new(0x0001C778, 0x0001C77C)]),
+        new(0x0003C938, "survived", Encoding.Complex, [new(0x0001C868, 0x0001C86C)]),
+        new(0x0003C940, "survived", Encoding.Complex, [new(0x0001C8BC, 0x0001C8E4)]),
+        new(0x0003C950, "survived", Encoding.Complex, [new(0x0001C950, 0x0001C960)]),
+        new(0x0003C960, "survived", Encoding.Complex, [new(0x0001CA8C, 0x0001CA9C)]),
+        new(0x0003C970, "survived", Encoding.Complex, [new(0x0001CBCC, 0x0001CBDC)]),
+        new(0x0003C980, "survived", Encoding.Complex, [new(0x0001CD0C, 0x0001CD1C)]),
+        new(0x0003CA70, "chapter", Encoding.Complex, [new(0x00020778, 0x00020790)]),
     ];
 }
