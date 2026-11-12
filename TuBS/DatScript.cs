@@ -93,7 +93,7 @@ class Field
     Field[] flask2;
     Field[] flask3;
 
-    //type: 977 (Text) type: 494 (Mail)
+    //type: 4 (Map label) type: 977 (Text) type: 494 (Mail)
     string text;
 
     public Field(byte[] data)
@@ -141,6 +141,25 @@ class Field
             flask3 = flds.ToArray();
 
         }
+        else if (type == 4)
+        { //Map label
+            dry = true;
+            if (data.Length >= 56)
+            {
+                reader.BaseStream.Position = 16;
+                if (reader.ReadInt32() == 676)
+                {
+                    reader.BaseStream.Position = 48;
+                    if (reader.ReadInt32() == 2)
+                    {
+                        int string_size = reader.ReadInt32();
+                        text = System.Text.Encoding.GetEncoding(932).GetString(reader.ReadBytes(string_size)).Replace("\0", "");
+                        if (text != "")
+                            dry = false;
+                    }
+                }
+            }
+        }
         else if (type == 977)
         { //Text
             reader.BaseStream.Position += 60;
@@ -181,7 +200,7 @@ class Field
                 if (flask3[i].dry == false)
                     ret.AddRange(flask3[i].GetText().Select(x => "[Fl3:" + i + "]" + x).ToList());
         }
-        else if (type == 977 | type == 494)
+        else if (type == 4 | type == 977 | type == 494)
         {
             ret.Add(text);
         }
@@ -195,7 +214,7 @@ class Field
 
     public void SetText(string str)
     {
-        if (type == 977 | type == 494)
+        if (type == 4 | type == 977 | type == 494)
             text = str;
         else if (type == 6)
         {
@@ -247,6 +266,34 @@ class Field
             writer.Write(f1_size);
             writer.Write(f2_size);
             writer.Write(f3_size);
+            writer.Flush();
+            writer.Close();
+            return stream.ToArray();
+        }
+        else if (type == 4)
+        {
+            reader.BaseStream.Position = 52;
+            int string_size = reader.ReadInt32();
+            string old_text = System.Text.Encoding.GetEncoding(932).GetString(reader.ReadBytes(string_size)).Replace("\0", "");
+            if (text == old_text)
+                return data;
+            byte[] textbt = System.Text.Encoding.GetEncoding(932).GetBytes(text + "\0");
+            Array.Resize(ref textbt, (textbt.Length + 3) / 4 * 4);
+            int delta = textbt.Length - string_size;
+            reader.BaseStream.Position = 0;
+            writer.Write(reader.ReadBytes(8));
+            writer.Write(reader.ReadInt32() + delta);
+            writer.Write(reader.ReadInt32() + delta);
+            writer.Write(reader.ReadBytes(8));
+            writer.Write(reader.ReadInt32() + delta); //second argument size
+            writer.Write(reader.ReadBytes(16));
+            writer.Write(reader.ReadInt32() + delta); //same size
+            writer.Write(reader.ReadInt32());
+            reader.BaseStream.Position += 4;
+            writer.Write(textbt.Length);
+            writer.Write(textbt);
+            reader.BaseStream.Position += string_size;
+            writer.Write(reader.ReadBytes((int)(reader.BaseStream.Length - reader.BaseStream.Position)));
             writer.Flush();
             writer.Close();
             return stream.ToArray();

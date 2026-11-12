@@ -125,7 +125,7 @@ public sealed partial class MainWindow
         Console.WriteLine("Status: Done");
     }
 
-    public void OnUnpackButtonClicked()
+    public void OnUnpackButtonClicked(bool ignoreProtect = false)
     {
         int[] files_to_unpack = new int[] {0, 1, 2, 4, 6, 8, 11, 13, 14, 15, 549, 552, 2256, 2257, 2261, 2263, 2264, 2265, 2266, 2267, 2268, 2269, 2270, 2271,
             2272, 2273, 2274, 2275, 2276, 2277, 2278, 2279, 2283, 2284, 2286, 2288, 2289, 2290, 2291, 2292, 2293, 2294, 2295, 2296, 2297, 2298, 2299, 2300, 2301,
@@ -134,7 +134,7 @@ public sealed partial class MainWindow
             2367, 2368, 2369, 2371, 2373, 2375, 2376, 2377, 2378, 2380, 2381, 2382, 2383, 2385, 2386, 2387, 2388, 2389, 2390, 2391, 2392, 2393, 2394, 2398, 2399,
             2400, 2401, 2403, 2404, 2405, 2406, 2408, 2409, 2410, 2411, 2412, 2413, 2419, 2420, 2421, 2423, 2425, 2428, 2435, 2437, 2438, 2439, 2440, 2441, 2442, 2443,
             2444, 2445, 2446, 2447, 2449, 2455, 2456, 2457, 2458, 2459, 2460, 2462, 2465, 2466, 2916, 2919, 2930, 2931, 2932, 2939, 2940, 2962, 3030, 3057, 3058, 3059, //2919 title screen; 2982 eb logo
-			3101, 3107, 3117, 3123, 3124, 3133, 3146, 3165, 3188, 3251, 3258, 3297, 3384, 3386, 3389, 3390, 3391, 3393, 3394, 3396, 3397, 3398, 3400, 3401, 3402,
+			3101, 3107, 3117, 3123, 3124, 3133, 3146, 3165, 3188, 3251, 3258, 3297, 3379, 3380, 3381, 3384, 3386, 3389, 3390, 3391, 3393, 3394, 3396, 3397, 3398, 3400, 3401, 3402,
             3404, 3405, 3407, 3408, 3410, 3411, 3413, 3414, 3416, 3417, 3420, 3422, 3424, 3426, 3428, 3431, 3434, 3435, 3437, 3439, 3442, 3445, 3446, 3449, 3451,
             3453, 3456, 3458, 3462, 3467, 3469, 3470, 3471, 3475, 3499, 3504, 3525,
         };
@@ -146,10 +146,16 @@ public sealed partial class MainWindow
         //backup protected files
         string back_dir = "Backup" + Path.DirectorySeparatorChar;
         string protect_file = "protect.txt";
-        string[] protectedFiles = File.Exists(protect_file)
-            ? File.ReadAllLines(protect_file).Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith('#'))
-                .Select(TrackedFiles.NormalizePath).ToArray()
-            : [];
+        string[] protectedFiles = [];
+        if (!ignoreProtect)
+        {
+            protectedFiles = File.Exists(protect_file)
+                ? File.ReadAllLines(protect_file).Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith('#'))
+                    .Select(TrackedFiles.NormalizePath).ToArray()
+                : [];
+            protectedFiles = protectedFiles.Concat(GitProtectedFiles.GetFiles(Directory.GetCurrentDirectory()))
+                .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        }
         var restoredFiles = new List<string>();
         Console.WriteLine("Status: Unpack work started");
 
@@ -249,6 +255,15 @@ public sealed partial class MainWindow
 
         Console.WriteLine("Status: making script from .dat");
         string[] dats = new string[] {
+            Path.Combine("3379", "e0003948.dat"), Path.Combine("3379", "e0003952.dat"), Path.Combine("3379", "e0003953.dat"),
+            Path.Combine("3379", "e0003955.dat"), Path.Combine("3379", "e0003956.dat"), Path.Combine("3379", "e0003957.dat"),
+            Path.Combine("3380", "e0003921.dat"), Path.Combine("3380", "e0003922.dat"), Path.Combine("3380", "e0003923.dat"),
+            Path.Combine("3380", "e0003924.dat"), Path.Combine("3380", "e0003925.dat"), Path.Combine("3380", "e0003926.dat"),
+            Path.Combine("3380", "e0003927.dat"), Path.Combine("3380", "e0003928.dat"), Path.Combine("3380", "e0003929.dat"),
+            Path.Combine("3380", "e0003930.dat"), Path.Combine("3380", "e0003931.dat"), Path.Combine("3380", "e0003932.dat"),
+            Path.Combine("3380", "e0003933.dat"), Path.Combine("3380", "e0003934.dat"), Path.Combine("3380", "e0003935.dat"),
+            Path.Combine("3380", "e0003936.dat"), Path.Combine("3380", "e0003937.dat"), Path.Combine("3381", "e0003913.dat"),
+            Path.Combine("3381", "e0003918.dat"), Path.Combine("3381", "e0003919.dat"), Path.Combine("3381", "e0003920.dat"),
             Path.Combine("3384", "e0003855.dat"),
             Path.Combine("3386", "e0003806.dat"), Path.Combine ("3389", "e0003758.dat"), Path.Combine ("3390", "e0003735.dat"),
             Path.Combine("3391", "e0003704.dat"), Path.Combine ("3393", "e0003673.dat"), Path.Combine ("3394", "e0003642.dat"),

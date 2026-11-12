@@ -6,7 +6,7 @@ public static partial class Program
 
     private static readonly Dictionary<string, Command> commands = new() {
         { "Help", new ("Print this help", PrintHelp) },
-        { "Unpack", new ("Unpack translation files from input iso", Unpack) },
+        { "Unpack", new ("Unpack [ignoreProtect] - unpack translation files from input iso; ignoreProtect disables Git and protect.txt protection", Unpack) },
         { "Pack", new ("Pack changed tracked files to output iso. Binary texts and SLPS are always packed.", () => Pack(false)) },
         { "PackAll", new ("Pack all tracked files to output iso (also: Pack All).", () => Pack(true)) },
         { "ApplySourceFont", new ("Apply source fonts to Data3 fonts", ApplySourceFont) },
@@ -94,8 +94,15 @@ public static partial class Program
         }
     }
 
-    private static void Unpack()
+    private static void Unpack(string[] args)
     {
+        if (args.Length > 2 || (args.Length == 2 && args[1] != "ignoreProtect"))
+        {
+            Console.WriteLine(commands["Unpack"].Description);
+            return;
+        }
+
+        bool ignoreProtect = args.Length == 2;
         if (!File.Exists(Config.InputIsoPath))
         {
             Console.WriteLine("Input iso " + Config.InputIsoPath + " not found");
@@ -106,7 +113,7 @@ public static partial class Program
         if (!File.Exists(Config.SlpsPath)) SlpsExtractor.Extract();
 
         var windowClass = new MainWindow();
-        windowClass.OnUnpackButtonClicked();
+        windowClass.OnUnpackButtonClicked(ignoreProtect);
     }
 
     private static void Pack(bool all)
