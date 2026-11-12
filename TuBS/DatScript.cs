@@ -153,7 +153,7 @@ class Field
                     if (reader.ReadInt32() == 2)
                     {
                         int string_size = reader.ReadInt32();
-                        text = System.Text.Encoding.GetEncoding(932).GetString(reader.ReadBytes(string_size)).Replace("\0", "");
+                        text = System.Text.Encoding.GetEncoding(1251).GetString(reader.ReadBytes(string_size)).Replace("\0", "");
                         if (text != "")
                             dry = false;
                     }
@@ -274,10 +274,10 @@ class Field
         {
             reader.BaseStream.Position = 52;
             int string_size = reader.ReadInt32();
-            string old_text = System.Text.Encoding.GetEncoding(932).GetString(reader.ReadBytes(string_size)).Replace("\0", "");
+            string old_text = System.Text.Encoding.GetEncoding(1251).GetString(reader.ReadBytes(string_size)).Replace("\0", "");
             if (text == old_text)
                 return data;
-            byte[] textbt = System.Text.Encoding.GetEncoding(932).GetBytes(text + "\0");
+            byte[] textbt = System.Text.Encoding.GetEncoding(1251).GetBytes(text + "\0");
             Array.Resize(ref textbt, (textbt.Length + 3) / 4 * 4);
             int delta = textbt.Length - string_size;
             reader.BaseStream.Position = 0;

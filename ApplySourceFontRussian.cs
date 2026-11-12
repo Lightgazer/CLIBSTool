@@ -168,7 +168,7 @@ public static partial class Program
             chars: CodePage.GetCodePage(2449, mode: "import")
         );
 
-        foreach (var font in new[] { "font2.ar", "font3.ar" })
+        foreach (var font in new[] { "font2.ar", "font3.ar", "font5.ar" })
         {
             var sourceDirectory = Path.Combine("SourceFonts", "2962", font);
             var dataDirectory = Path.Combine("DATA3", "2962", font);
