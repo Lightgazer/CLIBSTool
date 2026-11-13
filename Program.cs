@@ -12,6 +12,7 @@ public static partial class Program
         { "ApplySourceFont", new ("Apply source fonts to Data3 fonts", ApplySourceFont) },
         { "UnpackBinaryTexts", new ($"Unpack texts from japanese SLPS ({Config.SourceSLPS})", BinaryTextManager.Unpack) },
         { "ConvertImage", new ("ConvertImage <input.ttx> <output.png> or <input.png> <existing-output.ttx>", ConvertImage) },
+        { "DrawIconFrames", new ("Draw iconinfo.dat frames on transparent @table. images next to Pictures PNG files", IconInfoFrames.Draw) },
     };
 
     public static void Main(string[] args)

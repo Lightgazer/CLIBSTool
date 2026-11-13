@@ -154,6 +154,7 @@ public sealed partial class MainWindow
                     .Select(TrackedFiles.NormalizePath).ToArray()
                 : [];
             protectedFiles = protectedFiles.Concat(GitProtectedFiles.GetFiles(Directory.GetCurrentDirectory()))
+                .Where(file => !Path.GetFileName(file).StartsWith('@'))
                 .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
         }
         var restoredFiles = new List<string>();
@@ -310,6 +311,7 @@ public sealed partial class MainWindow
         }
         DeleteDirectory(back_dir);
 
+        IconInfoFrames.Draw();
         TrackedFiles.Create(restoredFiles).Save();
         Console.WriteLine("Status: Done");
         //progressbar.Fraction = 1;

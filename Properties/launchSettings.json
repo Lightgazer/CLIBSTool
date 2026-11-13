@@ -24,6 +24,11 @@
       "commandLineArgs": "UnpackBinaryTexts",
       "workingDirectory": "$(MSBuildProjectDirectory)\\..\\.."
     },
+    "DrawIconFrames": {
+      "commandName": "Project",
+      "commandLineArgs": "DrawIconFrames",
+      "workingDirectory": "$(MSBuildProjectDirectory)\\..\\.."
+    },
     "PackAll": {
       "commandName": "Project",
       "commandLineArgs": "Pack All",

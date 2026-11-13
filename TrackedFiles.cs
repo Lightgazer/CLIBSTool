@@ -23,7 +23,7 @@ public sealed class TrackedFiles
         {
             foreach (var path in Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories))
             {
-                if (ExcludedNames.Contains(Path.GetFileName(path)))
+                if (ExcludedNames.Contains(Path.GetFileName(path)) || Path.GetFileName(path).StartsWith('@'))
                     continue;
                 // Font tools can leave these working files behind after a failed run.
                 if (path.EndsWith(".temp.png", StringComparison.OrdinalIgnoreCase) ||
@@ -56,7 +56,8 @@ public sealed class TrackedFiles
     }
 
     public string[] GetFilesToPack(bool all) => entries
-        .Where(pair => File.Exists(pair.Key) && (all || IsModified(pair.Key, pair.Value)))
+        .Where(pair => !Path.GetFileName(pair.Key).StartsWith('@') &&
+                       File.Exists(pair.Key) && (all || IsModified(pair.Key, pair.Value)))
         .Select(pair => pair.Key).ToArray();
 
     private static bool IsModified(string path, Entry entry)
