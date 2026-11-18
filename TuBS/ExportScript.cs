@@ -1,6 +1,6 @@
 ﻿public sealed partial class MainWindow
 {
-    private List<string> DumpText(FileInfo file, char[] code_page)
+    private List<string> DumpText(FileInfo file, char[] code_page, char[] original_code_page)
     {
         List<string> script = new List<string>();
         BinaryReader reader = new BinaryReader(File.OpenRead(file.FullName));
@@ -15,6 +15,8 @@
             {//ordinary char from "font" 
                 if (code_page.Length > num1)
                     str += code_page[num1].ToString();
+                else if (original_code_page.Length > num1)
+                    str += original_code_page[num1].ToString();
                 else
                     str += "<" + num1.ToString() + ">";
             }
@@ -128,18 +130,17 @@
         DirectoryInfo info = new DirectoryInfo(script_dir);
         FileInfo[] files = info.GetFiles().OrderBy(p => p.CreationTime).ToArray();
         string[] num = script_dir.Split(System.IO.Path.DirectorySeparatorChar);
-        char[] code_page;
-        if (num.Length == 3)
-            code_page = CodePage.GetCodePage(Int32.Parse(num[1]), num[2]);
-        else
-            code_page = CodePage.GetCodePage(Int32.Parse(num[1]));
+        int code_page_num = Int32.Parse(num[1]);
+        string code_page_name = num.Length == 3 ? num[2] : "none";
+        char[] code_page = CodePage.GetCodePage(code_page_num, code_page_name);
+        char[] original_code_page = CodePage.GetCodePage(code_page_num, code_page_name, "origin");
         int index = 0;
         foreach (FileInfo file in files)
         {
             index++;
             if (file.Extension == "")
             {
-                List<string> script_list = DumpText(file, code_page);
+                List<string> script_list = DumpText(file, code_page, original_code_page);
                 string line = "#### File " + index + ": " + file.Name + " ####";
                 if (script_list.Count > 0)
                 {
