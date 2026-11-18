@@ -196,15 +196,15 @@ public sealed partial class MainWindow
         isoReader.Close();
     }
 
-    private void Pack(string child, string father)
+    private void Pack(List<string> childs, string father)
     {
         int filelist_size = 0;
         //first read file list in father
-        string[] child_names = new string[8911];
         using BinaryReader father_reader = new BinaryReader(File.OpenRead(father));
         if (1129464148 != father_reader.ReadInt32()) //check TARC or not
             throw new InvalidDataException($"Not a TARC archive: {father}");
         int num_of_files = father_reader.ReadInt32();
+        string[] child_names = new string[num_of_files];
         int offset_to_filelist = father_reader.ReadInt32();
         father_reader.BaseStream.Seek((long)offset_to_filelist, SeekOrigin.Begin);
         for (int index = 0; index < num_of_files; ++index)
@@ -214,19 +214,20 @@ public sealed partial class MainWindow
                 child_names[index] += (object)buf;
             filelist_size += child_names[index].Length + 1;
         }
-        //next check our child
-        int child_num = -1;
-        string name = new FileInfo(child).Name;
-        for (int i = 0; i < num_of_files; i++)
-            if (name == child_names[i]) //so its our child
-                child_num = i;
-        if (child_num == -1)
-            throw new InvalidDataException($"{child} is not present in archive {father}");
+
+        //validate
+        var child_dict = new Dictionary<int, string>();
+        foreach (var child in childs)
+        {
+            string name = new FileInfo(child).Name;
+            int child_num = Array.IndexOf(child_names, name);
+            if (child_num == -1) throw new InvalidDataException($"{child} is not present in archive {father}");
+            child_dict.Add(child_num, child);
+        }
+
         //lets pack
         string tmp = "temp";
         BinaryWriter writer = new BinaryWriter((Stream)new FileStream(tmp, FileMode.Create));
-        BinaryReader child_reader = new BinaryReader(File.OpenRead(child));
-
         father_reader.BaseStream.Position = 16;
         int header_size = father_reader.ReadInt32() >> 1;
         father_reader.BaseStream.Position = 0L;
@@ -244,9 +245,10 @@ public sealed partial class MainWindow
         }
         for (int index = 0; index < num_of_files; ++index)
         {
-            if (child_num == index)
+            if (child_dict.TryGetValue(index, out var child))
             {
                 int compress_flag = 0;
+                BinaryReader child_reader = new BinaryReader(File.OpenRead(child));
                 if (child_reader.BaseStream.Length > 8L)
                 {
                     child_reader.BaseStream.Position = 4L;

@@ -63,6 +63,12 @@ public sealed partial class MainWindow
         return Path.Combine(depth == 1 ? "pDATA3" : depth == 2 ? "cDATA3" : "lDATA3", relativePath);
     }
 
+    private static string GetRelativeParentPath(string file)
+    {
+        string relative = file.Substring(file.IndexOf(Path.DirectorySeparatorChar) + 1);
+        return Path.GetDirectoryName(relative);
+    }
+
     private void PackDATA(string[] pathed_parents)
     {
         if (pathed_parents.Length == 0)
@@ -377,32 +383,34 @@ public sealed partial class MainWindow
         }
         sdat_list.Clear();
 
-        foreach (string file in lastgen_list.Distinct())
+        foreach (var grouping in lastgen_list.Distinct().GroupBy(Path.GetDirectoryName))
         {
-            string relative = file.Substring(file.IndexOf(Path.DirectorySeparatorChar) + 1);
-            string father = ResolveDataPath(Path.GetDirectoryName(relative));
-            Console.WriteLine("Status: Packing " + file + " in " + father);
-            Pack(file, father);
+            var file_group = grouping.ToList();
+            string directory = grouping.Key;
+            string relative = directory.Substring(directory.IndexOf(Path.DirectorySeparatorChar) + 1);
+            string father = ResolveDataPath(relative);
+            Console.WriteLine("Status: Packing files in " + father);
+            Pack(file_group, father);
             grandchild_list.Add(father);
         }
         lastgen_list.Clear();
 
-        foreach (string file in grandchild_list.Distinct())
+        foreach (var grouping in grandchild_list.Distinct().GroupBy(GetRelativeParentPath))
         {
-            string[] sliced_grandchild = file.Split(Path.DirectorySeparatorChar);
-            string father = ResolveDataPath(Path.Combine(sliced_grandchild[1], sliced_grandchild[2]));
-            Console.WriteLine("Status: Packing " + file + " in " + father);
-            Pack(file, father);
+            var file_group = grouping.ToList();
+            string father = ResolveDataPath(grouping.Key);
+            Console.WriteLine("Status: Packing files in " + father);
+            Pack(file_group, father);
             child_list.Add(father);
         }
         grandchild_list.Clear();
 
-        foreach (string file in child_list.Distinct())
+        foreach (var grouping in child_list.Distinct().GroupBy(GetRelativeParentPath))
         {
-            string[] sliced_child = file.Split(Path.DirectorySeparatorChar);
-            string father = ResolveDataPath(sliced_child[1]);
-            Console.WriteLine("Status: Packing " + file + " in " + father);
-            Pack(file, father);
+            var file_group = grouping.ToList();
+            string father = ResolveDataPath(grouping.Key);
+            Console.WriteLine("Status: Packing files in " + father);
+            Pack(file_group, father);
             parent_list.Add(father);
         }
         child_list.Clear();
